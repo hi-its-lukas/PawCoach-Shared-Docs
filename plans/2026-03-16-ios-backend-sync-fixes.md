@@ -410,4 +410,4 @@ Nach Abschluss der iOS-Fixes muessen folgende Stellen in der Spec korrigiert wer
 - [ ] Fix 6: Register + Register-Customer: `gdpr_consent` + `agb_consent` hinzufuegen + UI-Checkboxen
 - [ ] Fix 7: Notification Preferences auf `/api/auth/notification-preferences` umstellen (falls aktuell `/api/customer/` verwendet)
 - [ ] Testen: Jeden gefixten Endpoint manuell gegen das Backend testen
-- [ ] Spec: CROSS-PLATFORM-FEATURE-SPEC.md in BEIDEN Repos aktualisieren
+- [ ] Spec: CROSS-PLATFORM-FEATURE-SPEC.md im Shared-Docs-Repo aktualisieren und Submodule anheben
