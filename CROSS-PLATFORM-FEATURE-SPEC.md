@@ -1,13 +1,14 @@
 # PawCoach — Cross-Platform Feature-Spezifikation (Unified)
 
-**Version:** 2026-03-16-v4
+**Version:** 2026-03-17-v5
 **Plattformen:** Backend (Flask/Python) | Web-Frontend (Jinja2+JS) | iOS (Swift/SwiftUI)
-**Zweck:** Einziges, zentrales Dokument fuer ALLE Plattformen. Lebt identisch in beiden Repos. Bei Aenderungen in BEIDEN Repos aktualisieren!
+**Zweck:** Zentrales Dokument fuer ALLE Plattformen. Die kanonische Quelle ist `PawCoach-Shared-Docs`.
 
-> **SYNC-REGEL:** Dieses File MUSS in beiden Repos identisch sein.
-> - Backend-Repo: `Dog-School-Manager/docs/CROSS-PLATFORM-FEATURE-SPEC.md`
-> - iOS-Repo: `PawCoach-iOS/docs/CROSS-PLATFORM-FEATURE-SPEC.md`
-> - Bei jeder Aenderung: Version-Datum aktualisieren + in BEIDEN Repos committen.
+> **SYNC-REGEL:** Dieses File wird nur im Shared-Docs-Repository gepflegt.
+> - Canonical Repo: `PawCoach-Shared-Docs/CROSS-PLATFORM-FEATURE-SPEC.md`
+> - Backend-Checkout: `Dog-School-Manager/docs/shared/CROSS-PLATFORM-FEATURE-SPEC.md`
+> - iOS-Checkout: `PawCoach-iOS/docs/shared/CROSS-PLATFORM-FEATURE-SPEC.md`
+> - Bei jeder Aenderung: Versionsdatum aktualisieren, im Shared-Repo committen und danach die Submodule aktualisieren.
 
 ---
 
@@ -115,6 +116,9 @@ iOS MUSS beide Consent-Felder mit UI-Checkboxen abfragen und als `true` senden.
 
 - Benutzer koennen mehrere Rollen haben (z.B. Trainer + Admin)
 - Rollenwechsel: Web via Session, API via `PUT /api/auth/switch-context`
+- Sichtbarkeit von Tabs, Menues, Buttons und Deep Links wird aus `Rolle + Schulkontext + aktivem Plan + gebuchten Addons + Features` bestimmt, nicht nur aus `role`.
+- Backend stellt dafuer einen kanonischen Capability-Contract bereit, z.B. `GET /api/features` oder `GET /api/auth/capabilities`.
+- Web und iOS muessen nicht erlaubte Features proaktiv ausblenden. `403` bleibt Absicherung, ist aber nicht das primaere UI-Gating.
 
 ---
 
@@ -773,6 +777,9 @@ POST /api/push/unregister { "token": "..." }
 
 ## 12. SaaS & Billing (Web-only)
 
+Checkout und Vertragsverwaltung bleiben webbasiert, aber die resultierenden Entitlements
+muessen danach fuer alle Clients ueber den gemeinsamen Capability-Contract verfuegbar sein.
+
 ### Web-Routes
 
 | Route | Funktion |
@@ -791,6 +798,13 @@ POST /api/push/unregister { "token": "..." }
 | `invoice.payment_failed` | Zahlungsfehlschlag verarbeiten |
 | `customer.subscription.updated` | Abo-Status aktualisieren |
 | `customer.subscription.deleted` | Abo-Kuendigung verarbeiten |
+
+### Plan- und Addon-Regel
+
+- Billing-Checkout ist Web-only.
+- Feature-Freischaltung ist nie Web-only.
+- Sobald ein Plan oder Addon aktiv ist, muessen Backend, Web und iOS denselben wirksamen Zustand sehen.
+- Optional buchbare Addons muessen im Capability-Contract separat ausgewiesen werden.
 
 ---
 

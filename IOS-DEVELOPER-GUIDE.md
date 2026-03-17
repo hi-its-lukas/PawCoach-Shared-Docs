@@ -1,152 +1,190 @@
 # iOS-Entwickler Anleitung — Shared Docs & API Contract
 
-**Stand:** 2026-03-16
-**Betrifft:** Alle die am PawCoach-iOS Repo arbeiten
+**Stand:** 2026-03-17
+**Betrifft:** Alle, die am PawCoach-iOS-Repo arbeiten
 
 ---
 
-## Was hat sich geaendert?
+## Grundregel
 
-Die Cross-Platform-Dokumentation (Feature-Spec, Sync-Strategy, OpenAPI-Spec) liegt jetzt in einem **eigenen Repo** (`PawCoach-Shared-Docs`) und wird per **Git Submodule** in beide Projekt-Repos eingebunden. So gibt es nur noch **eine einzige Quelle** fuer geteilte Docs — kein manuelles Kopieren mehr.
+Die geteilte Produkt- und API-Dokumentation wird nicht mehr im iOS-Repo dupliziert.
+Sie lebt im Repository `PawCoach-Shared-Docs` und wird im iOS-Repo als Submodule unter
+`docs/shared/` eingebunden.
 
-**Repo-Struktur jetzt:**
-```
+Damit gilt:
+
+- gemeinsame Specs nur in `docs/shared/` aendern
+- iOS-spezifische Dokumente weiterhin direkt in `docs/`
+- keine lokalen Kopien gemeinsamer Plaene oder Specs mehr anlegen
+
+---
+
+## Relevante Dateien
+
+```text
 PawCoach-iOS/
 ├── docs/
-│   ├── shared/                          ← Git Submodule (PawCoach-Shared-Docs)
+│   ├── shared/
 │   │   ├── CROSS-PLATFORM-FEATURE-SPEC.md
 │   │   ├── CROSS-PLATFORM-SYNC-STRATEGY.md
-│   │   ├── openapi.json                 ← Auto-generierte API-Spec (249 Pfade)
+│   │   ├── IOS-DEVELOPER-GUIDE.md
+│   │   ├── openapi.json
 │   │   └── plans/
-│   │       └── 2026-03-16-ios-backend-sync-fixes.md
-│   ├── CROSS-PLATFORM-FEATURE-SPEC.md   ← Symlink → shared/...
+│   ├── CODEX-REVIEW-PROMPT.md
 │   ├── backend-api.md
 │   └── ...
 ```
 
 ---
 
-## Einmaliges Setup (nach git pull)
+## Setup
 
-Beim ersten Pull nach der Umstellung:
+Nach einem frischen Clone oder nach Pulls mit Submodule-Aenderungen:
 
 ```bash
-cd PawCoach-iOS
-git pull origin main
-git submodule init
-git submodule update
+git submodule update --init --recursive
 ```
 
-Danach ist `docs/shared/` mit den aktuellen Docs befuellt.
-
-**Alternativ** (wenn du das Repo frisch klonst):
+Wenn du gezielt den neuesten Shared-Docs-Stand ziehen willst:
 
 ```bash
-git clone --recurse-submodules git@github.com:hi-its-lukas/PawCoach-iOS.git
+git submodule update --remote docs/shared
 ```
 
 ---
 
-## Taeglicher Workflow
+## Arbeitsweise
 
-### Shared Docs aktualisieren (regelmaessig machen!)
+### Shared Docs aendern
 
-```bash
-cd PawCoach-iOS
-git submodule update --remote docs/shared
-git add docs/shared
-git commit -m "docs: shared docs aktualisiert"
-git push
-```
-
-**Wann:** Immer wenn du weisst, dass Backend-Aenderungen an der Spec gemacht wurden, oder mindestens **vor jedem Feature-Start**.
-
-### Geteilte Docs aendern
-
-Aenderungen an `CROSS-PLATFORM-FEATURE-SPEC.md` oder anderen geteilten Docs werden **nicht** direkt im iOS-Repo gemacht, sondern:
+Wenn du einen Contract, eine gemeinsame Spezifikation oder einen cross-platform Plan
+anpassen musst:
 
 ```bash
 cd docs/shared
-# ... Datei bearbeiten ...
+git checkout main
+# Dateien bearbeiten
 git add -A
-git commit -m "docs: Beschreibung der Aenderung"
+git commit -m "docs: update shared contract"
 git push origin main
 cd ../..
 git add docs/shared
-git commit -m "docs: shared docs aktualisiert"
-git push
+git commit -m "docs: bump shared docs"
 ```
 
-Danach muss das **Backend-Repo** das Submodule ebenfalls updaten (Backend-Entwickler informieren).
+### iOS-Implementierung starten
 
-### iOS-eigene Docs aendern
+Vor jedem groesseren Feature:
 
-Dateien die **nicht** in `docs/shared/` liegen (z.B. `docs/backend-api.md`, Audit-Reports) werden ganz normal im iOS-Repo bearbeitet — da aendert sich nichts.
+1. `docs/shared/CROSS-PLATFORM-FEATURE-SPEC.md` lesen
+2. `docs/shared/openapi.json` gegen den geplanten Endpoint pruefen
+3. `docs/shared/plans/` auf bestehende Design- oder Fix-Dokumente pruefen
+4. erst dann Swift-Implementierung starten
 
 ---
 
-## OpenAPI Spec nutzen
+## Architektur-Regeln fuer iOS
 
-Die Datei `docs/shared/openapi.json` enthaelt die **komplette Backend-API** im OpenAPI 3.0 Format (249 Pfade, 308 Operationen). Du kannst sie nutzen fuer:
+### 1. Capability-driven UI
 
-1. **Endpoint-Pfade pruefen:** Stimmt mein iOS-Pfad mit dem Backend ueberein?
-2. **Request/Response-Struktur:** Welche Felder erwartet der Endpoint?
-3. **Code-Generierung:** Tools wie `swift-openapi-generator` koennen Stubs generieren
+Tabs, Menues, Buttons und Navigationsziele werden nicht nur aus Rollenstrings abgeleitet.
+Die App muss sich am gemeinsamen Capability-Contract orientieren:
 
-**Schnell einen Endpoint nachschlagen:**
+- aktiver Benutzerkontext
+- Rolle
+- gebuchter Plan der Schule
+- aktive Addons
+- effektive Feature-Freigaben
+
+Das heisst konkret:
+
+- kein statisches Role-only Gating fuer Admin- oder Forum-Features
+- keine versteckten API-Probieraufrufe, um Rechte indirekt zu erraten
+- keine Screens fuer Features anzeigen, die im aktuellen Kontext nicht verfuegbar sind
+
+### 2. Realtime ohne Workarounds
+
+Messaging folgt dieser Trennung:
+
+- REST fuer Laden und Mutationen
+- Socket.IO fuer Realtime-Events
+- Push fuer Offline-Benachrichtigung und Deep Link
+
+Polling-Loops sind nur ein temporarer Fallback und muessen entfernt werden, sobald der
+gemeinsame Realtime-Contract steht.
+
+### 3. Models muessen Contract-getrieben sein
+
+Wenn OpenAPI oder Shared-Plan neue Felder definieren, muessen iOS-Models diese bewusst
+abbilden. Kritisch fuer Messaging sind insbesondere:
+
+- `conversation_id`
+- `client_message_id`
+- `delivery_status`
+- `delivered_at`
+- `read_at`
+
+---
+
+## OpenAPI nutzen
+
+Die Datei `docs/shared/openapi.json` ist die Referenz fuer:
+
+1. Pfade und HTTP-Methoden
+2. erwartete Bodies
+3. Auth-Anforderungen
+4. bekannte Ressourcen und Tags
+
+Schneller Endpoint-Check:
+
 ```bash
-cat docs/shared/openapi.json | python3 -m json.tool | grep -A 5 "/api/messages/info"
+python3 -m json.tool docs/shared/openapi.json | grep -A 8 '"/api/messages/info/{message_id}"'
 ```
 
 ---
 
-## DRINGENDE FIXES (vor naechstem Release!)
+## Aktuelle Referenzplaene
 
-In `docs/shared/plans/2026-03-16-ios-backend-sync-fixes.md` sind **6 kritische Mismatches** dokumentiert, die aktuell zu 404/400-Fehlern fuehren:
+Wichtige gemeinsame Dokumente:
 
-| # | Was | Wo in Xcode | Fix |
-|---|-----|-------------|-----|
-| 1 | `markDelivered` Pfad | `Endpoint+Messaging.swift` | `/mark-delivered` → `/delivered` |
-| 2 | `messageInfo` Pfad | `Endpoint+Messaging.swift` | `/{id}/info` → `/info/{id}` |
-| 3 | TOTP Verify | `Endpoint+Auth.swift` | `setup_token` Parameter hinzufuegen |
-| 4 | Forum Thread | `Endpoint+Messaging.swift` | `content` → `body` |
-| 5 | Poll Erstellung | `Endpoint+Messaging.swift` | `{question, options}` → `{title, questions: [{question_text, question_type, options}]}` |
-| 6 | Registrierung | `Endpoint+Auth.swift` | `gdpr_consent` + `agb_consent` hinzufuegen |
+- `docs/shared/plans/2026-03-16-ios-backend-sync-fixes.md`
+- `docs/shared/plans/2026-03-17-unified-modernization-implementation-plan.md`
 
-**Details mit Code-Beispielen:** Siehe `docs/shared/plans/2026-03-16-ios-backend-sync-fixes.md`
+Der zweite Plan ist die aktuelle Referenz fuer:
+
+- Capability-Contract
+- Messaging-Modernisierung
+- Web/iOS-Paritaet nach Login
+- Entitlement-gesteuerte Sichtbarkeit
 
 ---
 
-## Checkliste
+## Checkliste vor dem Merge
 
-- [ ] `git submodule init && git submodule update` ausgefuehrt
-- [ ] `docs/shared/` Ordner ist befuellt (nicht leer)
-- [ ] Symlink `docs/CROSS-PLATFORM-FEATURE-SPEC.md` funktioniert (`cat` zeigt Inhalt)
-- [ ] Fix 1-6 aus Sync-Fixes-Doku umgesetzt
-- [ ] Jeden gefixten Endpoint gegen Backend getestet
+- Shared-Dokumente auf aktuellem Stand
+- OpenAPI gegen verwendete Endpoints geprueft
+- UI-Gating gegen Capabilities statt nur gegen Rollen geprueft
+- Realtime-State ohne lokale Sonderlogik getestet
+- Push, Deep Link und Reconnect auf Messaging getestet
 
 ---
 
 ## Bei Problemen
 
-**Submodule ist leer / fehlt:**
+**Submodule leer oder veraltet**
+
 ```bash
 git submodule update --init --recursive
+git submodule update --remote docs/shared
 ```
 
-**Symlink funktioniert nicht (Windows):**
-Git Symlinks muessen unter Windows aktiviert sein:
-```bash
-git config --global core.symlinks true
-```
-Dann Repository neu klonen.
+**Submodule-Konflikt**
 
-**Merge-Konflikt im Submodule:**
 ```bash
 cd docs/shared
 git checkout main
-git pull origin main
+git pull --ff-only origin main
 cd ../..
 git add docs/shared
-git commit -m "docs: shared submodule conflict resolved"
+git commit -m "docs: resolve shared docs submodule update"
 ```

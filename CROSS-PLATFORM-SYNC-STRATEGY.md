@@ -1,261 +1,162 @@
 # Cross-Platform Sync-Strategie
 
-**Stand:** 2026-03-15
-**Ziel:** Sicherstellen, dass Backend, Web-Frontend und iOS-App immer den gleichen technischen Feature-Stand haben.
+**Stand:** 2026-03-17
+**Ziel:** Backend, Web-Frontend und iOS entwickeln gegen dieselben fachlichen Regeln,
+denselben API-Contract und dieselben Entitlements.
 
 ---
 
-## 1. Problem
+## 1. Grundsatz
 
-Drei unabhaengige Codebases (Backend/Flask, Web/Jinja2+JS, iOS/Swift) entwickeln sich unterschiedlich schnell. Ohne Prozess entstehen Feature-Luecken, inkompatible API-Aenderungen und doppelte Arbeit.
+PawCoach hat drei Ausfuehrungsoberflaechen nach dem Login:
 
----
+- Backend/API als System of Record
+- Web-Frontend als browserbasierter Client
+- iOS-App als nativer Client
 
-## 2. Strategie: Feature-Spec als Single Source of Truth
-
-### 2.1 Feature-Spec-Dokumente
-
-Jede Plattform pflegt ein `docs/CROSS-PLATFORM-FEATURE-SPEC.md`:
-
-| Repo | Datei | Verantwortlich |
-|------|-------|----------------|
-| Dog-School-Manager (Backend+Web) | `docs/CROSS-PLATFORM-FEATURE-SPEC.md` | Backend-Team |
-| PawCoach-iOS | `docs/CROSS-PLATFORM-FEATURE-SPEC.md` | iOS-Entwickler |
-| (ggf. Android) | `docs/CROSS-PLATFORM-FEATURE-SPEC.md` | Android-Team |
-
-### 2.2 API-Contract als Schnittstelle
-
-Das Backend definiert die API-Contracts. Alle Clients (Web, iOS, Android) implementieren gegen diese Contracts.
-
-**Regel:** Kein Client darf eine API-Aenderung erfordern, die nicht zuerst im Backend implementiert und dokumentiert wurde.
+Die Produktlogik darf nicht auseinanderlaufen. Es gibt deshalb genau eine gemeinsame
+Dokumentationsquelle: `PawCoach-Shared-Docs`.
 
 ---
 
-## 3. Prozesse
+## 2. Single Source of Truth
 
-### 3.1 Feature-Entwicklung (Neues Feature)
+### 2.1 Kanonische Artefakte
 
-```
-1. Feature-Request → Design-Dokument (docs/plans/)
-2. API-Contract definieren (Endpoints, Request/Response-Schema)
-3. Backend implementieren + Tests
-4. CROSS-PLATFORM-FEATURE-SPEC.md in Backend-Repo aktualisieren
-5. iOS/Web gleichzeitig oder nacheinander implementieren
-6. Abgleich-Check: Alle Specs vergleichen
-```
+| Artefakt | Kanonischer Ort | Konsumenten |
+|----------|-----------------|-------------|
+| Feature-Spec | `PawCoach-Shared-Docs/CROSS-PLATFORM-FEATURE-SPEC.md` | Backend, Web, iOS |
+| Sync-Strategie | `PawCoach-Shared-Docs/CROSS-PLATFORM-SYNC-STRATEGY.md` | Backend, Web, iOS |
+| OpenAPI | `PawCoach-Shared-Docs/openapi.json` | Web, iOS, QA |
+| Cross-Platform-Plaene | `PawCoach-Shared-Docs/plans/` | Backend, Web, iOS |
 
-### 3.2 API-Aenderungen (Breaking Changes)
+### 2.2 Projekt-Repos
 
-**Regel:** Breaking Changes nur ueber API-Versionierung.
+Die Produkt-Repositories enthalten nur das Submodule:
 
-```
-1. Neue API-Version erstellen (z.B. /api/v2/...)
-2. Alte Version fuer mind. 3 Monate beibehalten
-3. Deprecation-Header in Responses setzen
-4. Alle Clients muessen vor Abschaltung migriert sein
-```
+- `Dog-School-Manager/docs/shared/`
+- `PawCoach-iOS/docs/shared/`
 
-### 3.3 Woechentlicher Sync-Check (empfohlen)
-
-**Automatisiert per CI-Job oder manuell:**
-
-1. Feature-Specs aller Repos abrufen
-2. Endpoints vergleichen (welche fehlen wo?)
-3. Delta-Report generieren
-4. In Sprint-Planning priorisieren
+Repo-lokale Dokumente bleiben erlaubt, aber nur fuer plattformspezifische Themen
+wie iOS-interne Audits, Betriebsdokumente oder rein webseitige UI-Notizen.
 
 ---
 
-## 4. Technische Massnahmen
+## 3. Contract-first Regeln
 
-### 4.1 API-Schema-Validierung
+### 3.1 Backend ist die fachliche Autoritaet
 
-**Empfehlung:** OpenAPI/Swagger-Spec fuer alle API-Endpoints.
+- Persistenz, Rechtepruefung und Entitlements werden im Backend entschieden.
+- Web und iOS implementieren gegen dokumentierte Contracts.
+- Kein Client fuehrt eine neue API-Annahme ein, die nicht vorher im Backend festgelegt wurde.
 
-```yaml
-# Beispiel: openapi.yaml (Auszug)
-paths:
-  /api/messages/{id}:
-    get:
-      summary: Nachrichten einer Konversation laden
-      responses:
-        200:
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ConversationDetail'
-```
+### 3.2 Capability-Contract ist Pflicht
 
-**Vorteile:**
-- Automatische Client-Code-Generierung (Swift, TypeScript)
-- Schema-Validierung in Tests
-- Dokumentation immer aktuell
+Rollen allein reichen nicht. Die Freigabe eines Features ergibt sich aus:
 
-**Umsetzung (Schritt 1 — niedrige Aufwandsstufe):**
-- Flask-Smorest oder Connexion fuer automatische OpenAPI-Generierung
-- Oder manuell gepflegte `openapi.yaml` im Repo-Root
+- aktivem Kontext
+- Rolle des Users
+- aktivem Plan der Schule
+- gebuchten Addons
+- optionalen Rolleneinschraenkungen innerhalb einer Schule
 
-### 4.2 Contract-Tests
+Darum wird ein kanonischer Endpoint eingefuehrt, z.B. `GET /api/features` oder
+`GET /api/auth/capabilities`. Dieser Contract ist fuer Web und iOS bindend.
 
-Tests die sicherstellen, dass API-Responses dem dokumentierten Schema entsprechen:
+### 3.3 OpenAPI ist Referenz fuer API-Pfade
 
-```python
-# tests/test_api_contracts.py
-def test_conversation_response_schema(logged_in_client, conversation):
-    resp = logged_in_client.get(f"/api/messages/{conversation.id}")
-    data = resp.get_json()
-    # Pflichtfelder pruefen
-    assert "id" in data
-    assert "conv_type" in data
-    assert "display_name" in data
-    assert "last_seen" in data  # Neues Feld
-    assert "is_muted" in data   # Neues Feld
-    assert "is_blocked" in data # Neues Feld
-```
-
-### 4.3 Feature-Flags
-
-Fuer Features die noch nicht auf allen Plattformen verfuegbar sind:
-
-```python
-# Backend: Feature-Flag pruefen
-FEATURE_FLAGS = {
-    "delivery_status": False,  # delivered_at/read_at noch nicht implementiert
-    "message_search": False,   # Serverseitige Suche noch nicht da
-}
-```
-
-API-Endpoint `/api/features` liefert aktive Feature-Flags an Clients.
-
-### 4.4 Deprecation-Tracking
-
-Datei `docs/API-DEPRECATIONS.md` trackt veraltete Endpoints:
-
-```markdown
-| Endpoint | Deprecated seit | Entfernung geplant | Ersatz |
-|----------|----------------|-------------------|--------|
-| (noch keine) | - | - | - |
-```
+`openapi.json` wird aus dem Backend generiert und in dieses Shared-Repo geschrieben.
+Neue oder geaenderte API-Pfade gelten erst dann als stabil, wenn die OpenAPI-Spec
+aktualisiert wurde.
 
 ---
 
-## 5. Kommunikations-Artefakte
+## 4. Entwicklungsprozess
 
-### 5.1 CHANGELOG pro Release
+### 4.1 Neues oder geaendertes Feature
 
-Jedes Repo pflegt ein `CHANGELOG.md` (Keep a Changelog Format):
+1. Problem oder Luecke in `plans/` dokumentieren.
+2. Zielbild und API-Contract festlegen.
+3. Entitlements und Sichtbarkeitsregeln festlegen.
+4. Backend implementieren und testen.
+5. OpenAPI und Shared-Spec aktualisieren.
+6. Web und iOS gegen denselben Contract umsetzen.
+7. Paritaet pruefen und Delta schliessen.
 
-```markdown
-## [1.2.0] - 2026-03-15
-### Added
-- Reply/Quote fuer Nachrichten (reply_to_id)
-- Block/Unblock/Report User
-- ProfileVisibility Einstellungen
-### Changed
-- Contacts-Endpoint liefert jetzt dogs-Sektion
-### Fixed
-- Direktnachrichten an blockierte User werden verhindert
-```
+### 4.2 Breaking Changes
 
-### 5.2 Release-Notes-Template
+Breaking Changes muessen vermieden werden. Wenn sie noetig sind:
 
-Bei jedem Release:
-1. **Backend-Aenderungen:** Neue/geaenderte Endpoints
-2. **Neue DB-Felder:** Migrationen die gelaufen sind
-3. **Breaking Changes:** Was muss in Clients angepasst werden
-4. **Feature-Flags:** Was ist neu verfuegbar / was wurde entfernt
+1. alte und neue Semantik dokumentieren
+2. Migration fuer Web und iOS planen
+3. Deprecation-Zeitraum festlegen
+4. Abschaltung erst nach erfolgreicher Client-Migration
 
----
+### 4.3 Keine Workaround-Regel
 
-## 6. Abgleich-Checkliste (bei jedem Release)
+Nicht erlaubt als dauerhafte Loesung:
 
-```
-╔══════════════════════════════════════════════════════════════╗
-║  CROSS-PLATFORM SYNC-CHECK                                  ║
-╠══════════════════════════════════════════════════════════════╣
-║                                                              ║
-║  □ Feature-Spec im eigenen Repo aktualisiert?               ║
-║  □ Neue API-Endpoints in allen Specs dokumentiert?          ║
-║  □ Response-Schema-Aenderungen an alle Teams kommuniziert?  ║
-║  □ Contract-Tests fuer neue Endpoints geschrieben?          ║
-║  □ Feature-Flags fuer unfertige Cross-Platform-Features?    ║
-║  □ CHANGELOG aktualisiert?                                  ║
-║  □ Breaking Changes mit Deprecation-Zeitraum versehen?      ║
-║  □ Delta zwischen iOS-Spec und Backend-Spec geprueft?       ║
-║                                                              ║
-╚══════════════════════════════════════════════════════════════╝
-```
+- polling statt verfuegbarer Echtzeit-Events
+- UI einblenden und auf `403` hoffen
+- Rollenstrings hart codieren, wenn Plan/Addons relevant sind
+- versteckte Alternate-Endpoints nur fuer einen Client
+- clientseitige fachliche Sonderregeln, die im Backend nicht kanonisch modelliert sind
 
 ---
 
-## 7. Priorisierte Umsetzungsschritte
+## 5. Technische Leitlinien
 
-| # | Massnahme | Aufwand | Wirkung | Empfehlung |
-|---|-----------|---------|---------|------------|
-| 1 | Feature-Specs in beiden Repos pflegen | Niedrig | Hoch | **Sofort starten** |
-| 2 | CHANGELOG einfuehren | Niedrig | Mittel | Sofort starten |
-| 3 | Contract-Tests schreiben | Mittel | Hoch | Naechster Sprint |
-| 4 | API-Deprecation-Tracking | Niedrig | Mittel | Naechster Sprint |
-| 5 | OpenAPI-Spec generieren | Mittel | Hoch | Mittelfristig |
-| 6 | Feature-Flags Endpoint | Niedrig | Mittel | Bei Bedarf |
-| 7 | Automatisierter Spec-Diff CI-Job | Hoch | Hoch | Langfristig |
+### 5.1 Entitlements
+
+- Backend liefert einen normalisierten Capability-Contract.
+- Web und iOS bauen Navigation, Menues, Deep Links und Aktionen daraus.
+- Nicht verfuegbare Features werden ausgeblendet oder als gesperrt markiert.
+- Backend validiert weiterhin serverseitig jeden Zugriff.
+
+### 5.2 Realtime
+
+- REST ist Standard fuer Laden, Erstellen und Mutationen.
+- Socket.IO ist Standard fuer in-app Realtime-Events.
+- Push ist fuer Offline-Benachrichtigung und Deep Linking, nicht fuer den Live-State.
+
+### 5.3 Testing
+
+- Backend: API-Contract-Tests und Rechte-Tests
+- Web: UI-Sichtbarkeit und happy-path Flows
+- iOS: Capability-Gating, Navigation und Realtime-State
+- Cross-platform: End-to-end Tests fuer kritische Kernablaeufe
 
 ---
 
-## 8. Aktueller Delta-Status (2026-03-16)
+## 6. Release-Checkliste
 
-### Im Backend vorhanden, in iOS noch nicht genutzt
+- Shared-Dokumente im Shared-Repo aktualisiert
+- OpenAPI neu generiert
+- Capability-Contract dokumentiert
+- Entitlements fuer Plan und Addons getestet
+- Web-Sichtbarkeit gegen Capabilities getestet
+- iOS-Sichtbarkeit gegen Capabilities getestet
+- Realtime-Flows ohne Polling oder Sonderwege getestet
+- Release Notes fuer API- und UI-Aenderungen geschrieben
 
-| Feature | Status |
-|---------|--------|
-| Socket.IO Real-Time Events | iOS pollt, kein WebSocket-Client |
-| Serverseitige Chat-Suche | iOS nutzt lokale Suche (Server-Endpoint vorbereitet) |
+---
 
-### Plattform-spezifisch (kein Delta)
+## 7. Prioritaeten
 
-| Feature | Plattform | Bemerkung |
-|---------|-----------|-----------|
-| Offline-Modus / PendingAction Queue | iOS-only | Native SwiftData + NWPathMonitor |
-| App-Sperre (Face ID / Touch ID) | iOS-only | Native Biometrie |
-| Karten-Vorschau (Standort-Nachrichten) | iOS-only | Tap oeffnet Apple Maps |
-| SaaS-Billing / Stripe-Checkout | Web-only | Web-only Checkout-Flow |
-| Oeffentliche Schulseiten (SEO) | Web-only | Landingpages |
-| E-Mail-Vorlagen-Editor (WYSIWYG) | Web-only | Admin-Bereich |
+| # | Massnahme | Wirkung | Prioritaet |
+|---|-----------|---------|------------|
+| 1 | Kanonischen Capability-Contract einfuehren | Sehr hoch | Sofort |
+| 2 | OpenAPI im Shared-Repo verankern | Hoch | Sofort |
+| 3 | Chat-Realtime auf Events statt Workarounds umstellen | Hoch | Sofort |
+| 4 | Web und iOS capability-driven machen | Sehr hoch | Naechster Sprint |
+| 5 | Contract-Tests und Sichtbarkeits-Tests ausbauen | Hoch | Naechster Sprint |
+| 6 | Automatisierten Delta-Check einfuehren | Mittel | Danach |
 
-### Bekannter Backend-Bug
+---
 
-| Problem | Beschreibung |
-|---------|-------------|
-| `/api/messages/{id}/location` blockiert bei aktiver Live-Session | Statischer Standort und Live-Location muessen unabhaengig funktionieren |
+## 8. Referenzplan
 
-### Paritaet erreicht
+Die konkrete, gemeinsame Umsetzung steht in:
 
-| Feature | Seit |
-|---------|------|
-| Reply/Quote (reply_to_id) | 2026-03-15 |
-| Block/Unblock | 2026-03-15 |
-| Report | 2026-03-15 |
-| Clear Chat | 2026-03-15 |
-| Mute/Unmute (serverseitig) | 2026-03-16 |
-| ProfileVisibility | 2026-03-15 |
-| Last Seen | 2026-03-15 |
-| Shared Courses | 2026-03-15 |
-| Kontaktinfo-Panel | 2026-03-15 |
-| Polls | 2026-03-15 |
-| Live Location (inkl. Beenden-Button) | 2026-03-16 |
-| File Upload | 2026-03-15 |
-| Reactions | 2026-03-15 |
-| Message Edit/Delete | 2026-03-15 |
-| Archive/Unarchive | 2026-03-15 |
-| Groups & Broadcast | 2026-03-15 |
-| Contacts: dogs-Sektion | 2026-03-16 |
-| Zustellstatus (delivered_at/read_at) | 2026-03-15 (Backend), 2026-03-16 (iOS) |
-| Nachrichteninfo (GET /info/{id}) | 2026-03-15 (Backend), 2026-03-16 (iOS Swipe-Left) |
-| Chat-Suche (Volltextsuche) | 2026-03-15 (Backend+Web), iOS lokal |
-| Medien/Links/Doks-Zaehler | 2026-03-15 |
-| Sichtbarkeitsfilter (last_name_full) | 2026-03-15 |
-| Hunde-Co-Owner in Kontaktliste | 2026-03-15 |
-| Push-Notifications fuer Nachrichten | 2026-03-15 |
-| Web-UI Sichtbarkeitseinstellungen | 2026-03-15 |
-| isMuted/isBlocked/isDeleted Felder | 2026-03-16 |
+- `plans/2026-03-17-unified-modernization-implementation-plan.md`
 | Standort als Karten-Vorschau | 2026-03-16 (iOS) |
