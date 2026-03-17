@@ -333,3 +333,34 @@ Dann die Server-Logs pruefen welche Zeile den Disconnect ausloest.
 - [x] Fix: Flache Kontrollstruktur statt verschachtelter if-else ✅
 - [ ] Server neustarten damit neuer Code aktiv wird
 - [ ] Testen: iOS-App verbindet → KEIN 41-Disconnect → join_room erfolgt → Events kommen an
+
+---
+
+## Bug 7 UPDATE (17.03.2026 17:23): Immer noch nicht geloest!
+
+### Neue Logs nach Backend-Fix
+
+```
+LOG SocketEnginePolling: Got poll message: 4140{"sid":"jS1HDOZy5fT7UpTAAAAw"}
+LOG SocketEngine: Got message: 41          ← IMMER NOCH DISCONNECT
+LOG SocketEngine: Got message: 40{...}
+LOG SocketIOClient{/}: Disconnected: Got Disconnect
+LOG SocketIOClient{/}: Socket connected    ← Client reconnected aber ohne Room
+```
+
+Der Server sendet weiterhin `41` (Namespace-Disconnect) gefolgt von `40` (neuer Namespace-Connect).
+
+### Zusaetzlich: Polling-Fehler
+
+```
+ERROR SocketEnginePolling: Error during long poll request
+ERROR SocketEnginePolling: Error flushing waiting posts
+```
+
+### Was Backend pruefen muss
+
+1. Ist der Fix tatsaechlich deployed? (`git log --oneline -3` auf dem Server pruefen)
+2. Server-Logs pruefen: Wird `Socket.IO connect: jwt-auth user=8` geloggt? Oder ein Fehler?
+3. Was sendet der Server genau zurueck bei der Namespace-Verbindung?
+
+**Das `41` Packet ist ein Namespace-Disconnect — das passiert wenn `disconnect()` aufgerufen wird oder wenn die Auth im Namespace-Handler fehlschlaegt.**
