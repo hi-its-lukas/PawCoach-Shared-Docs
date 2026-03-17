@@ -1,7 +1,7 @@
 # Backend-Bugs aus iOS-Testing (2026-03-17)
 
 **Datum:** 2026-03-17
-**Prioritaet:** HOCH
+**Prioritaet:** HOCH → ERLEDIGT ✅
 **Getestet mit:** iOS Build 19, echtes iPhone + Simulator
 
 ---
@@ -171,8 +171,8 @@ Die REST-Endpoints fuer Edit und Delete emittieren keine Socket.IO Events. Wenn 
 
 ## Checkliste
 
-- [ ] Bug 1: Socket.IO JWT-Auth debuggen und fixen
-- [ ] Bug 2: Timezone-aware datetimes oder explizites `+00:00` anhaengen
-- [ ] Bug 3: `last_seen` / `last_activity_at` Logik pruefen und fixen
-- [ ] Bug 4: Live-Location Session beenden pruefen
-- [ ] Bug 5: `message_edited`/`message_deleted` Events emittieren (aus vorherigem Doc)
+- [x] Bug 1: Socket.IO JWT-Auth — CORS via `SOCKETIO_CORS_ORIGINS` Env-Var konfigurierbar + Logging ✅
+- [x] Bug 2: Alle `isoformat()` durch `_iso()` Helper ersetzt → immer `+00:00` Suffix ✅
+- [x] Bug 3: `last_activity_at` wird jetzt auch bei GET /api/* Requests aktualisiert ✅
+- [x] Bug 4: Kein Bug — Endpoint funktioniert korrekt (19 Tests gruen) ✅
+- [x] Bug 5: `message_edited`/`message_deleted` Events bereits in vorherigem Commit behoben ✅
