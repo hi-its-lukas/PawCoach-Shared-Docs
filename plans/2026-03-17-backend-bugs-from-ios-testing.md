@@ -249,3 +249,85 @@ def jwt_or_session_required(f):
 - [x] `last_activity_at` wird bei JWT-Requests aktualisiert ✅ Fix in `jwt_or_session_required` + `jwt_required` Decorator
 - [x] 214 Tests gruen (messaging + auth) ✅
 - [ ] Testen: iOS-User oeffnet Chat → Web zeigt korrekte "zuletzt online" Zeit (iOS-Entwickler)
+
+---
+
+## Bug 7: KRITISCH — Socket.IO trennt iOS-Verbindung sofort (41 disconnect)
+
+### Symptom
+
+Die iOS-App verbindet sich per Socket.IO. Der Handshake ist erfolgreich. Aber der Server sendet sofort ein **Disconnect-Packet (41)** gefolgt von einem neuen Connect (40). Der User ist damit in **keinem Room** → bekommt keine Events.
+
+### Beweis aus iOS-Logs (Build 25)
+
+```
+LOG SocketEngine: Got message: 0{"sid":"...","upgrades":["websocket"]}
+LOG SocketManager: Engine opened Connect
+LOG SocketEngine: Got message: 41        ← SERVER DISCONNECT
+LOG SocketEngine: Got message: 40{...}   ← Server reconnect
+LOG SocketIOClient{/}: Disconnected: Got Disconnect
+LOG SocketIOClient{/}: Socket connected  ← Client denkt er ist connected
+```
+
+### Der Token wird korrekt mitgesendet
+
+```
+GET /socket.io/?transport=polling&token=eyJhbGciOiJSUzI1NiIs...&EIO=4
+```
+
+Der JWT-Payload (decoded):
+```json
+{
+  "sub": "8",
+  "school_id": null,
+  "role": "admin",
+  "platform_admin": true,
+  "iat": 1773763624,
+  "exp": 1773764524,
+  "iss": "pawcoach"
+}
+```
+
+### Vermutete Ursache
+
+`handle_connect()` in `socketio_handlers.py` ruft `disconnect()` auf. Moegliche Gruende:
+1. `decode_access_token(token)` schlaegt fehl (Exception → Zeile 128-129)
+2. `payload` ist None/falsy (Zeile 146-147)
+3. `user_id` (`payload.get("sub")`) kann nicht in User aufgeloest werden (Zeile 145)
+4. `school_id: null` verursacht ein Problem in der Auth-Logik
+
+### Debug-Empfehlung
+
+Bitte temporaer Debug-Logging in `handle_connect()` ergaenzen:
+
+```python
+@socketio.on("connect")
+def handle_connect():
+    token = flask_request.args.get("token")
+    logger.info(f"Socket.IO connect: token={'yes' if token else 'no'}")
+    
+    if token:
+        try:
+            payload = decode_access_token(token)
+            logger.info(f"Socket.IO connect: payload={payload}")
+        except Exception as e:
+            logger.error(f"Socket.IO connect: decode error: {e}")
+            disconnect()
+            return
+        
+        if payload:
+            user_id = payload.get("sub")
+            logger.info(f"Socket.IO connect: user_id={user_id}")
+            user = db.session.get(User, int(user_id)) if user_id else None
+            logger.info(f"Socket.IO connect: user={user}")
+            # ... rest
+```
+
+Dann die Server-Logs pruefen welche Zeile den Disconnect ausloest.
+
+### Checkliste
+
+- [ ] Debug-Logging in handle_connect() hinzufuegen
+- [ ] Server-Logs pruefen welcher Code-Pfad den Disconnect ausloest
+- [ ] Fix implementieren
+- [ ] Testen: iOS-App verbindet → KEIN 41-Disconnect → join_room erfolgt → Events kommen an
