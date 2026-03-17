@@ -327,7 +327,9 @@ Dann die Server-Logs pruefen welche Zeile den Disconnect ausloest.
 
 ### Checkliste
 
-- [ ] Debug-Logging in handle_connect() hinzufuegen
-- [ ] Server-Logs pruefen welcher Code-Pfad den Disconnect ausloest
-- [ ] Fix implementieren
+- [x] Debug-Logging in handle_connect() — jeder Exit-Pfad loggt Grund ✅
+- [x] Fix: Ohne Token wird nicht mehr disconnect() aufgerufen (verhindert Race bei Polling) ✅
+- [x] Fix: CORS via SOCKETIO_CORS_ORIGINS Env-Var konfigurierbar ✅
+- [x] Fix: Flache Kontrollstruktur statt verschachtelter if-else ✅
+- [ ] Server neustarten damit neuer Code aktiv wird
 - [ ] Testen: iOS-App verbindet → KEIN 41-Disconnect → join_room erfolgt → Events kommen an
