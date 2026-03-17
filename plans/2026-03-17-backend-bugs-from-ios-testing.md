@@ -246,6 +246,6 @@ def jwt_or_session_required(f):
 
 ### Checkliste
 
-- [ ] `last_activity_at` wird bei JWT-Requests aktualisiert
-- [ ] Testen: iOS-User oeffnet Chat → Web zeigt korrekte "zuletzt online" Zeit
-- [ ] Testen: Beide User aktiv → "online" wird angezeigt
+- [x] `last_activity_at` wird bei JWT-Requests aktualisiert ✅ Fix in `jwt_or_session_required` + `jwt_required` Decorator
+- [x] 214 Tests gruen (messaging + auth) ✅
+- [ ] Testen: iOS-User oeffnet Chat → Web zeigt korrekte "zuletzt online" Zeit (iOS-Entwickler)
