@@ -143,9 +143,9 @@ Das Web-Frontend kann ISO 8601 genauso gut parsen (`new Date(isoString)`), und i
 
 ## Checkliste fuer Backend-Entwickler
 
-- [ ] `handle_connect()` um JWT-Auth erweitern (Code oben)
-- [ ] `verify_jwt_token()` Funktion finden/erstellen die JWT → User-Objekt liefert
-- [ ] Testen: Web-Chat funktioniert weiterhin (Session-Auth)
-- [ ] Testen: Socket.IO-Verbindung mit JWT-Token funktioniert
-- [ ] Optional: `created_at` Format auf ISO 8601 umstellen (alle `strftime` → `isoformat()`)
+- [x] `handle_connect()` um JWT-Auth erweitern (Code oben) ✅ 2026-03-17
+- [x] `verify_jwt_token()` Funktion finden/erstellen die JWT → User-Objekt liefert ✅ nutzt `decode_access_token()` aus `jwt_auth.py`
+- [x] Testen: Web-Chat funktioniert weiterhin (Session-Auth) ✅ 92 Messaging-Tests gruen
+- [ ] Testen: Socket.IO-Verbindung mit JWT-Token funktioniert (iOS-Entwickler muss testen)
+- [x] `created_at` Format auf ISO 8601 umgestellt ✅ alle `strftime` → `isoformat()` + JS `formatDateTime()` Helper
 - [ ] Optional: CORS fuer Socket.IO konfigurieren falls noetig
