@@ -194,9 +194,9 @@ iOS zeigt In-App-Banner auch wenn der Chat nicht offen ist.
 
 ## Checkliste
 
-- [ ] `message_receipts_updated` in mark_delivered und mark_read emittieren
-- [ ] `presence_update` bei connect und disconnect emittieren
-- [ ] `new_message` zusaetzlich in User-Rooms emittieren
-- [ ] Testen: iOS Sender sieht Doppelhaken live wenn Empfaenger Chat oeffnet
-- [ ] Testen: iOS zeigt "online" wenn anderer User verbunden
-- [ ] Testen: iOS zeigt In-App-Banner wenn Chat nicht offen
+- [x] `message_receipts_updated` in mark_delivered und mark_read emittieren ✅
+- [x] `presence_update` bei connect und disconnect emittieren ✅
+- [x] `new_message` zusaetzlich in User-Rooms emittieren ✅
+- [ ] Testen: iOS Sender sieht Doppelhaken live wenn Empfaenger Chat oeffnet (iOS-Entwickler)
+- [ ] Testen: iOS zeigt "online" wenn anderer User verbunden (iOS-Entwickler)
+- [ ] Testen: iOS zeigt In-App-Banner wenn Chat nicht offen (iOS-Entwickler)
