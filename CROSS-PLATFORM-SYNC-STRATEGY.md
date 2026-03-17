@@ -160,3 +160,30 @@ Die konkrete, gemeinsame Umsetzung steht in:
 
 - `plans/2026-03-17-unified-modernization-implementation-plan.md`
 | Standort als Karten-Vorschau | 2026-03-16 (iOS) |
+
+---
+
+## 9. iOS Modernization Status (2026-03-17)
+
+### Abgeschlossen
+
+| Workstream | Was | Status |
+|-----------|-----|--------|
+| E1 | CapabilityStore + Models | Done (Build 29) |
+| E1 | Capabilities in AppState (Login/Switch/Logout) | Done (Build 29) |
+| E2 | MainTabView capability-driven mit Fallback | Done (Build 29) |
+| F2 | ChatStore (ersetzt MessagingViewModel) | Done (Build 29) |
+| F3 | WebSocketManager Delegate-Pattern | Done (Build 29) |
+| F3 | Neue Events: message_receipts_updated, presence_update | Done (Build 29) |
+| F1 | clientMessageId im Message-Model | Done (Build 29, Backend noch nicht) |
+| F3 | MessageDetailView + MessagesListView auf ChatStore | Done (Build 29) |
+| F3 | Polling komplett entfernt | Done (Build 29) |
+
+### Offen (Backend-Voraussetzungen)
+
+| Was | Endpoint | Status |
+|-----|----------|--------|
+| Capability-Endpoint | GET /api/auth/capabilities | Backend muss implementieren |
+| clientMessageId akzeptieren | POST /api/messages/{id} | Backend muss Feld akzeptieren |
+| message_receipts_updated Event | Socket.IO | Backend muss bei delivered/read emittieren |
+| presence_update Event | Socket.IO | Backend muss bei connect/disconnect emittieren |
