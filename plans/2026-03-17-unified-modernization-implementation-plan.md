@@ -177,37 +177,38 @@ Das Backend liefert einen sauberen, normalisierten Produktkontext fuer alle Clie
 
 ### Konkrete Backend-Arbeitspakete
 
-#### B1. Feature Registry
+#### B1. Feature Registry ✅ ERLEDIGT
 
-Ein Modul definieren, z.B.:
+Implementiert in `capability_service.py`:
 
-- `feature_keys.py`
-- `capability_service.py`
-- `subscription_entitlements.py`
+- `FEATURE_REGISTRY` definiert alle Feature-Schluessel zentral
+- Plan-Includes und Addons abgebildet (source: plan/addon/role/always)
+- Rollenabhaengige Ausnahmen gekapselt (roles-Array pro Feature)
+- Limits berechnet (_get_limits)
+- CONTRACT_VERSION = 1 fuer Schema-Evolution
 
-Es soll:
+#### B2. Capability Endpoint ✅ ERLEDIGT
 
-- Feature-Schluessel zentral definieren
-- Plan-Includes und Addons abbilden
-- rollenabhaengige Ausnahmen kapseln
-- Limits berechnen
+`GET /api/auth/capabilities` implementiert in `blueprints/api_auth.py`:
 
-#### B2. Capability Endpoint
+- Kontextdaten (user_id, school_id, role, platform_admin)
+- Subscription-Status (subscribed_plan, effective_plan, status, trial/beta)
+- Aktive Addons (active, included, source)
+- Effektive Features (Boolean-Flags, Plan + Addon + Rolle kombiniert)
+- Limits (max_trainers, max_courses)
+- Query-Parameter: `?school_id=X&role=Y` (optional)
+- Auth: `@jwt_or_session_required`
 
-Neuer Endpoint mit:
+15 Tests in `tests/test_capabilities.py`:
 
-- Kontextdaten
-- Subscription-Status
-- aktiven Addons
-- effektiven Features
-- Limits
-
-Tests:
-
-- Kunde in Basic-Plan
-- Admin in Professional-Plan
-- Trainer mit eingeschraenkten Features
-- Addon aktiviert, Plan aber ohne Inklusivleistung
+- ✅ Kunde in Starter-Plan
+- ✅ Admin in Professional-Plan
+- ✅ Trainer mit eingeschraenkten Features
+- ✅ Addon aktiviert, Plan aber ohne Inklusivleistung
+- ✅ Platform-Admin ohne Schule (Enterprise)
+- ✅ Trial- und Beta-Schulen
+- ✅ Limits (Starter vs Professional)
+- ✅ Context-Override via Query-Parameter
 
 #### B3. Contract Cleanup
 

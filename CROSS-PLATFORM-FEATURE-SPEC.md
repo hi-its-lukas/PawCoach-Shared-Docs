@@ -1,6 +1,6 @@
 # PawCoach — Cross-Platform Feature-Spezifikation (Unified)
 
-**Version:** 2026-03-17-v5
+**Version:** 2026-03-17-v6
 **Plattformen:** Backend (Flask/Python) | Web-Frontend (Jinja2+JS) | iOS (Swift/SwiftUI)
 **Zweck:** Zentrales Dokument fuer ALLE Plattformen. Die kanonische Quelle ist `PawCoach-Shared-Docs`.
 
@@ -117,7 +117,10 @@ iOS MUSS beide Consent-Felder mit UI-Checkboxen abfragen und als `true` senden.
 - Benutzer koennen mehrere Rollen haben (z.B. Trainer + Admin)
 - Rollenwechsel: Web via Session, API via `PUT /api/auth/switch-context`
 - Sichtbarkeit von Tabs, Menues, Buttons und Deep Links wird aus `Rolle + Schulkontext + aktivem Plan + gebuchten Addons + Features` bestimmt, nicht nur aus `role`.
-- Backend stellt dafuer einen kanonischen Capability-Contract bereit, z.B. `GET /api/features` oder `GET /api/auth/capabilities`.
+- Backend stellt dafuer einen kanonischen Capability-Contract bereit: `GET /api/auth/capabilities` (implementiert, Contract-Version 1).
+  - Query-Parameter: `?school_id=X&role=Y` (optional, Default: aktive Schule/Rolle des Users)
+  - Response: `{ context, subscription, addons, features, limits, contract_version }`
+  - Auth: JWT oder Session (`@jwt_or_session_required`)
 - Web und iOS muessen nicht erlaubte Features proaktiv ausblenden. `403` bleibt Absicherung, ist aber nicht das primaere UI-Gating.
 
 ---
