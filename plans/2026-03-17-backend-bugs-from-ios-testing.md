@@ -176,3 +176,76 @@ Die REST-Endpoints fuer Edit und Delete emittieren keine Socket.IO Events. Wenn 
 - [x] Bug 3: `last_activity_at` wird jetzt auch bei GET /api/* Requests aktualisiert ✅
 - [x] Bug 4: Kein Bug — Endpoint funktioniert korrekt (19 Tests gruen) ✅
 - [x] Bug 5: `message_edited`/`message_deleted` Events bereits in vorherigem Commit behoben ✅
+
+---
+
+## Bug 6: KRITISCH — last_activity_at wird bei JWT-Requests NICHT aktualisiert
+
+### Problem
+
+Der `before_request` Hook in `app.py` (Zeile 350-366) prueft `current_user.is_authenticated`. Bei JWT-Requests ist `current_user` (Flask-Login) aber NICHT authentifiziert — der User wird stattdessen in `request._jwt_user` gespeichert.
+
+**Folge:** `last_activity_at` wird fuer alle iOS-User NIE aktualisiert → "zuletzt online" zeigt immer den letzten Web-Login.
+
+### Root Cause
+
+```python
+# app.py, Zeile 358:
+if not current_user.is_authenticated:  # ← FALSE fuer JWT-User!
+    return
+```
+
+### Fix
+
+```python
+@app.before_request
+def _update_last_activity():
+    # Pruefe sowohl Flask-Login als auch JWT-User
+    user = None
+    if current_user.is_authenticated:
+        user = current_user
+    elif hasattr(request, '_jwt_user') and request._jwt_user:
+        user = request._jwt_user
+
+    if not user:
+        return
+
+    is_api = request.path.startswith("/api/")
+    is_write = request.method in ("POST", "PUT", "PATCH", "DELETE")
+    if is_api or is_write:
+        user.last_activity_at = datetime.now(UTC)
+        db.session.commit()
+```
+
+### ACHTUNG
+
+Der `before_request` Hook laeuft VOR dem `jwt_or_session_required` Decorator. Das bedeutet `request._jwt_user` ist zum Zeitpunkt des Hooks noch NICHT gesetzt!
+
+**Besserer Fix:** Die `last_activity_at`-Aktualisierung in den `jwt_or_session_required` Decorator verschieben:
+
+```python
+def jwt_or_session_required(f):
+    @wraps(f)
+    def decorated(*args, **kwargs):
+        auth_header = request.headers.get("Authorization", "")
+        if auth_header.startswith("Bearer "):
+            user, error = get_jwt_user()
+            if error:
+                return error
+            request._jwt_user = user
+            # last_activity_at aktualisieren
+            user.last_activity_at = datetime.now(UTC)
+            db.session.commit()
+            return f(*args, **kwargs)
+        if current_user.is_authenticated:
+            request._jwt_user = current_user
+            return f(*args, **kwargs)
+        return jsonify({"error": "Nicht authentifiziert"}), 401
+    return decorated
+```
+
+### Checkliste
+
+- [ ] `last_activity_at` wird bei JWT-Requests aktualisiert
+- [ ] Testen: iOS-User oeffnet Chat → Web zeigt korrekte "zuletzt online" Zeit
+- [ ] Testen: Beide User aktiv → "online" wird angezeigt
