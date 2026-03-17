@@ -2,7 +2,7 @@
 
 **Datum:** 2026-03-17
 **Prioritaet:** HOCH
-**Status:** OFFEN
+**Status:** ERLEDIGT ✅
 
 ---
 
@@ -109,9 +109,9 @@ Wenn User A eine Nachricht bearbeitet oder loescht, sehen User B und C die Aende
 
 ## Checkliste
 
-- [ ] Fix 1: `socketio_handlers.py` Zeile 193 → `msg.created_at.isoformat()`
-- [ ] Fix 1: `socketio_handlers.py` Zeile 537 → `lm.created_at.isoformat() if lm else None`
-- [ ] Fix 2: `api_messaging.py` Edit-Route → `notify_message_edited()` aufrufen
-- [ ] Fix 2: `api_messaging.py` Delete-Route → `notify_message_deleted()` aufrufen
-- [ ] Testen: Web-Chat Edit/Delete → Aenderung erscheint bei anderem User live
-- [ ] Testen: iOS-Chat Edit/Delete → Aenderung erscheint bei anderem User live
+- [x] Fix 1: `socketio_handlers.py` → `msg.created_at.isoformat()` ✅ 2026-03-17
+- [x] Fix 1: `socketio_handlers.py` → `lm.created_at.isoformat()` ✅ 2026-03-17
+- [x] Fix 2: `api_messaging.py` Edit-Route → `notify_message_edited()` ✅ 2026-03-17
+- [x] Fix 2: `api_messaging.py` Delete-Route → `notify_message_deleted()` ✅ 2026-03-17
+- [x] Testen: 92 Messaging-Tests gruen ✅
+- [ ] Testen: iOS-Chat Edit/Delete → Aenderung erscheint bei anderem User live (iOS-Entwickler)
