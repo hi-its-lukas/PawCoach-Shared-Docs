@@ -331,7 +331,8 @@ Dann die Server-Logs pruefen welche Zeile den Disconnect ausloest.
 - [x] Fix: Ohne Token wird nicht mehr disconnect() aufgerufen (verhindert Race bei Polling) ✅
 - [x] Fix: CORS via SOCKETIO_CORS_ORIGINS Env-Var konfigurierbar ✅
 - [x] Fix: Flache Kontrollstruktur statt verschachtelter if-else ✅
-- [ ] Server neustarten damit neuer Code aktiv wird
+- [x] ROOT CAUSE: 2 Gunicorn-Worker ohne Redis message_queue → Worker kennen Sessions nicht
+- [x] Fix: Socket.IO nutzt jetzt Redis als message_queue (REDIS_URL Env-Var) ✅
 - [ ] Testen: iOS-App verbindet → KEIN 41-Disconnect → join_room erfolgt → Events kommen an
 
 ---
