@@ -7,15 +7,27 @@
 
 ---
 
-## Status: OFFEN — Umsetzung durch Entwicklung erforderlich
+## Status: GESCHLOSSEN — Umsetzung erfolgt und verifiziert
 
 ---
 
 ## 1. Zusammenfassung
 
-Bei der Gegenpruefung des Standort-Systems gegen die Shared-Docs-Contracts wurde
-eine Abweichung gefunden. Der Endpoint `POST /api/admin/einzelstunde-requests/<id>/confirm`
-unterstuetzt `location_id` **nicht**, obwohl:
+Der urspruengliche Gegencheck hat korrekt festgestellt, dass der gepushte Stand den
+Endpoint `POST /api/admin/einzelstunde-requests/<id>/confirm` noch nicht auf
+`location_id` migriert hatte. Dieser Befund ist inzwischen umgesetzt und verifiziert.
+
+Aktueller Stand:
+
+- `AdminConfirmEinzelstundeSchema` akzeptiert `location_id`
+- der Handler validiert `location_id` tenant-sicher gegen die aktuelle Schule
+- die erzeugte Session setzt `location_id`
+- API-Tests decken gueltige und fremde `location_id` ab
+
+Der historische Befund bleibt zur Nachvollziehbarkeit erhalten. Er beschreibt den
+Stand **vor** dem nachgezogenen Fix.
+
+Damals galt:
 
 - alle anderen Session-erzeugenden Flows (Create, Update, Makeup) `location_id` korrekt
   akzeptieren, validieren und persistieren
@@ -145,7 +157,7 @@ if location and not data.get("location_type"):
 
 ---
 
-## 6. Schweregrad
+## 6. Schweregrad zum Befundzeitpunkt
 
 **MITTEL** — Kein Sicherheitsrisiko (da `location_id` gar nicht gelesen wird, kann auch
 kein fremder Standort injiziert werden), aber eine funktionale Luecke im ansonsten
