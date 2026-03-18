@@ -130,9 +130,27 @@ abbilden. Kritisch sind derzeit insbesondere:
 
 - Admin-APIs fuer Standorte existieren serverseitig
 - Kurse und Sessions koennen einen Standort per `location_id` referenzieren
-- App-Models und Endpoints fuer Standorte sind vorbereitet
-- eine dedizierte iOS-Verwaltungsoberflaeche fuer Standort-CRUD ist kein stabiler
-  Endanwender-Flow und muss bei weiterer Arbeit explizit mitgedacht werden
+- App-Models, Endpoints und Admin-Flows fuer Standorte sind angebunden
+- das bedeutet konkret:
+  - `AdminLocation` und `AdminLocationsResponse` existieren bereits
+  - `AdminCourse` und `AdminSession` enthalten bereits `location_id` und `location_object`
+  - die Admin-Networking-Layer enthalten bereits `adminLocations`, `createLocation`,
+    `updateLocation` und `deleteLocation`
+- der End-to-End-Flow ist jetzt angeschlossen:
+  - `AdminViewModel` laedt, erstellt, aktualisiert und loescht Standorte
+  - School-Settings enthalten eine dedizierte Standort-CRUD-Oberflaeche
+  - Kurs-, Session- und Makeup-Editoren nutzen `location_id` als primaeren Pfad und
+    halten `location` nur noch als Freitext-Fallback vor
+
+### 5. Was der iOS-Entwickler rechecken soll
+
+Vor dem naechsten Abgleich bitte gezielt pruefen:
+
+1. Bleiben `location_id` und `location_object` in allen relevanten Admin-Flows die
+   primaeren Felder?
+2. Funktionieren Standort-CRUD in School-Settings sowie die Auswahl in Kurs-, Session-
+   und Makeup-Editoren weiterhin gegen denselben Contract?
+3. Wird `location: String` nur noch als bewusster Freitext-Fallback genutzt?
 
 ---
 

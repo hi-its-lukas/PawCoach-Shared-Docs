@@ -41,6 +41,8 @@ den Shared Specs, den Developer Guides und `openapi.json`.
 - Admin-CRUD fuer Standorte ist serverseitig verfuegbar
 - Kurse und Sessions koennen per `location_id` an Standorte gebunden werden
 - Admin-Responses liefern `location_object` fuer Client-Darstellung
+- iOS hat dafuer bereits vorbereitete Contract-Modelle und Endpoints
+  (`AdminLocation`, `AdminLocationsResponse`, `location_id`, `location_object`)
 
 ### Messaging Realtime
 
@@ -50,10 +52,30 @@ den Shared Specs, den Developer Guides und `openapi.json`.
 
 ## Noch bekannte Grenzen
 
-- Eine vollstaendige dedizierte iOS-UI fuer Standort-CRUD ist noch kein stabiler
-  Endanwender-Flow; Backend-Contract und App-Modelle sind aber vorhanden.
+- Das Standort-System ist jetzt in Backend, klassischem Web-Admin und iOS-Admin
+  end-to-end angeschlossen:
+  - `SchoolLocation` wird in den Schuleinstellungen verwaltet
+  - Kurs-, Session- und Makeup-Flows nutzen `location_id` als primaeren Pfad
+  - `location` bleibt nur als bewusster Freitext-Fallback fuer Sonderfaelle erhalten
 - `openapi.json` muss nach Backend-Aenderungen immer neu generiert werden, sonst bleibt
   Markdown aktueller als der maschinenlesbare Contract.
+
+## Recheck fuer iOS
+
+Der iOS-Entwickler sollte den aktuellen Stand deshalb wie folgt pruefen:
+
+1. Contract-Ebene:
+   `AdminLocation`, `AdminLocationsResponse`, `location_id` und `location_object`
+   muessen fuer Admin-Courses, Admin-Sessions und School-Settings vorhanden bleiben.
+2. Endpoint-Ebene:
+   `GET/POST/PUT/DELETE /api/admin/locations[/{id}]` muessen im Networking weiterhin
+   abgebildet sein.
+3. Flow-Ebene:
+   School-Settings-CRUD sowie Kurs-, Session- und Makeup-Auswahl muessen dieselben
+   Standorte konsistent verwenden.
+3. Flow-Ebene:
+   Admin-Views und ViewModels muessen noch von string-basierten Ortsfeldern auf einen
+   echten Standort-Flow umgestellt werden.
 
 ## Doku-Policy ab jetzt
 

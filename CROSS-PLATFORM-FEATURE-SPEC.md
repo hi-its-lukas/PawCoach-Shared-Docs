@@ -284,6 +284,9 @@ Endpoint: `GET /api/admin/dashboard` — KPIs: totalCustomers, totalTrainers, to
 - Kurse und Sessions koennen optional per `location_id` an einen Standort gebunden werden.
 - Session-Standorte ueberschreiben den Standardstandort des Kurses.
 - Der Mehr-Standort-Betrieb ist ueber Plan und `max_locations` begrenzt.
+- iOS besitzt dafuer bereits Contract-Modelle und Networking-Endpunkte; die noch offene
+  Arbeit liegt vor allem in der vollstaendigen Admin-UI-Integration statt im fehlenden
+  Contract.
 
 ### Anfragen-Verwaltung
 
