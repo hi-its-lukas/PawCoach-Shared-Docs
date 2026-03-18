@@ -62,6 +62,24 @@ Entitlements, Pricing, Standorte und Messaging-Realtime.
   - `poll_update`
 - `POST /api/messages/{conv_id}` akzeptiert optional `client_message_id`
 
+### 6. Statische Standort-Nachrichten und Treffpunkte
+
+- `POST /api/messages/{conv_id}/location` ist der kanonische Endpoint fuer statische
+  Standort-Nachrichten.
+- Der Endpoint akzeptiert entweder:
+  - direkte Koordinaten (`lat/lng` oder `latitude/longitude`)
+  - oder eine freie `address`, die serverseitig geocodiert wird
+- Optional zulaessig:
+  - `name` oder `label`
+  - `body`
+- Persistiert werden dabei mindestens:
+  - `location_lat`
+  - `location_lng`
+  - `location_label`
+  - `location_address`
+- Das Feature muss bewusst auch wechselnde Trainingsorte unterstuetzen, nicht nur den
+  aktuellen GPS-Standort des sendenden Users.
+
 ## Wichtige Implementierungsorte
 
 | Thema | Primare Dateien |

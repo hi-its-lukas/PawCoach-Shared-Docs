@@ -472,7 +472,7 @@ Endpoint: `GET /api/admin/dashboard` — KPIs: totalCustomers, totalTrainers, to
 | Feature | Endpoint | Backend | Web | iOS |
 |---------|----------|:-------:|:---:|:---:|
 | Medien hochladen | `POST /api/messages/{id}/upload` (multipart) | Ja | Ja | Ja |
-| Standort senden | `POST /api/messages/{id}/location` (body: `{lat, lng}`) | Ja | Ja | Ja |
+| Standort senden | `POST /api/messages/{id}/location` (body: `{lat?, lng?, address?, name?/label?, body?}`) | Ja | Ja | Ja |
 | Live-Standort starten | `POST /api/messages/{id}/live-location` | Ja | Ja | Ja |
 | Positionen abfragen | `GET /api/messages/live-location/{sessionId}/positions` | Ja | Ja | Ja |
 | Live-Standort stoppen | `DELETE /api/messages/live-location/{sessionId}` | Ja | Ja | Ja (Menu-Button) |
@@ -481,8 +481,22 @@ Endpoint: `GET /api/admin/dashboard` — KPIs: totalCustomers, totalTrainers, to
 **Standort-Nachrichten (iOS):**
 - Standort-Nachrichten (`message_type: "location"`) werden als **Karten-Vorschau** mit Marker dargestellt
 - Tap auf die Karte oeffnet **Apple Maps** mit dem geteilten Standort
-- Message-Model enthaelt: `latitude: Double?`, `longitude: Double?`, `location_name: String?`
+- Message-Model enthaelt: `latitude: Double?`, `longitude: Double?`, `location_name: String?`,
+  `location_address: String?`
 - Live-Standort kann ueber Menu-Button "Live-Standort beenden" gestoppt werden
+
+**Statischer Treffpunkt / wechselnder Ort:**
+- `POST /api/messages/{id}/location` unterstuetzt zwei gueltige Pfade:
+  - direkte Koordinaten (`lat/lng` oder `latitude/longitude`)
+  - freie Adresse bzw. Treffpunkt (`address`), die serverseitig geocodiert wird
+- Optional zulaessig:
+  - `name` oder `label` fuer einen sprechenden Treffpunktnamen
+  - `body` fuer zusaetzlichen Freitext wie "Bitte 10 Minuten frueher da sein"
+- Der Endpoint ist damit nicht nur fuer den aktuellen GPS-Standort gedacht, sondern auch fuer
+  wechselnde Trainingsorte wie Mantrailing-, Social-Walk- oder Outdoor-Treffpunkte.
+- Web und iOS sollen dafuer explizit zwei UX-Pfade anbieten:
+  - aktuellen Standort senden
+  - Treffpunkt waehlen / Adresse suchen
 
 **Hinweis:** Der `/api/messages/{id}/location` Endpoint darf NICHT blockieren wenn eine Live-Location-Session aktiv ist. Statischer Standort und Live-Location sind unabhaengige Features.
 

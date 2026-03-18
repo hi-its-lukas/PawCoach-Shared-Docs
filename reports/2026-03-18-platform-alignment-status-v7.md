@@ -63,6 +63,10 @@ den Shared Specs, den Developer Guides und `openapi.json`.
 - `new_message`, `message_receipts_updated` und `presence_update` sind Teil des aktiven
   Contracts
 - `client_message_id` ist fuer REST-Senden und iOS-Reconciliation dokumentiert
+- statische Standort-Nachrichten unterstuetzen jetzt auch freie Treffpunkte:
+  - `POST /api/messages/{id}/location` akzeptiert Koordinaten oder `address`
+  - `location_address` und `location_label` sind Teil des gemeinsamen Message-Contracts
+  - Web und iOS bieten dafuer getrennte Flows fuer aktuellen Standort vs. Treffpunkt
 
 ## Noch bekannte Grenzen
 

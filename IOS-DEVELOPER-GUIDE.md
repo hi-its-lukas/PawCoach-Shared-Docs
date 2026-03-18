@@ -120,6 +120,14 @@ Wichtige Live-Events:
 - `reaction_update`
 - `poll_update`
 
+Statische Standort-Nachrichten muessen davon getrennt bleiben:
+
+- `/api/messages/{id}/location` ist fuer feste Treffpunkte und wechselnde Orte gedacht
+- iOS soll dafuer zwei sichtbare UX-Pfade haben:
+  - aktuellen Standort senden
+  - Treffpunkt waehlen / Adresse suchen
+- Der Client darf also nicht nur den aktuellen GPS-Standort des sendenden Users anbieten
+
 ### 3. Models muessen Contract-getrieben sein
 
 Wenn OpenAPI oder Shared-Docs neue Felder definieren, muessen iOS-Models diese bewusst
@@ -132,6 +140,7 @@ abbilden. Kritisch sind derzeit insbesondere:
 - `read_at`
 - `location_id`
 - `location_object`
+- `location_address`
 
 ### 4. Standorte sind jetzt ein echtes Fachmodell
 
@@ -155,6 +164,8 @@ abbilden. Kritisch sind derzeit insbesondere:
 - `max_locations` wird im Standort-UI proaktiv geprueft
 - `AdminViewModel` und `MainTabView` nutzen `admin_dashboard`
 - Forum-Moderation nutzt `forum_moderation`
+- Chat-Views unterstuetzen jetzt neben dem aktuellen Standort auch freie Treffpunkte
+  per Adress- oder POI-Suche
 
 ### 6. Was der iOS-Entwickler rechecken soll
 

@@ -42,6 +42,10 @@ Frontend nach dem Login sowie fuer die oeffentlichen Web-Flows vor dem Login.
 - REST fuer Laden und Mutationen
 - Socket.IO fuer Live-Status
 - Keine stillen Polling-Workarounds, wenn ein Live-Event verfuegbar ist
+- Fuer statische Standort-Nachrichten soll das Web bewusst zwischen
+  `Aktuellen Standort senden` und `Treffpunkt teilen` unterscheiden
+- Der Treffpunkt-Flow darf freie Adresse, Parkplatz, Waldstueck oder anderen Suchtext
+  an `/api/messages/{id}/location` senden; serverseitige Geocodierung ist Teil des Contracts
 
 ## Wichtige Backend-Bruecken fuer das Web
 
