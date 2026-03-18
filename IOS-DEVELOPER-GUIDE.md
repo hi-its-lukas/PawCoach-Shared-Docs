@@ -96,6 +96,13 @@ Konkret:
 - `CapabilityStore` ist die zentrale Freigabequelle
 - fehlende oder inaktive Features werden nicht einfach sichtbar gelassen
 - lokale Rollenstrings sind nur Fallback, nicht die Produktlogik
+- wichtige Capability-Keys fuer die App sind insbesondere:
+  - `admin_dashboard`
+  - `forum_moderation`
+  - `trainer_calendar`
+  - `messaging`
+  - `community_forum`
+  - Limits wie `max_locations`
 
 ### 2. Realtime ohne Workarounds
 
@@ -141,8 +148,15 @@ abbilden. Kritisch sind derzeit insbesondere:
   - School-Settings enthalten eine dedizierte Standort-CRUD-Oberflaeche
   - Kurs-, Session- und Makeup-Editoren nutzen `location_id` als primaeren Pfad und
     halten `location` nur noch als Freitext-Fallback vor
+  - die Einzelstunden-Bestaetigung unterstuetzt ebenfalls `location_id`
 
-### 5. Was der iOS-Entwickler rechecken soll
+### 5. Letzte Recheck-Punkte sind ebenfalls umgesetzt
+
+- `max_locations` wird im Standort-UI proaktiv geprueft
+- `AdminViewModel` und `MainTabView` nutzen `admin_dashboard`
+- Forum-Moderation nutzt `forum_moderation`
+
+### 6. Was der iOS-Entwickler rechecken soll
 
 Vor dem naechsten Abgleich bitte gezielt pruefen:
 
@@ -150,7 +164,9 @@ Vor dem naechsten Abgleich bitte gezielt pruefen:
    primaeren Felder?
 2. Funktionieren Standort-CRUD in School-Settings sowie die Auswahl in Kurs-, Session-
    und Makeup-Editoren weiterhin gegen denselben Contract?
-3. Wird `location: String` nur noch als bewusster Freitext-Fallback genutzt?
+3. Greifen `admin_dashboard`, `forum_moderation` und `max_locations` an den
+   sichtbaren UI-Gates korrekt?
+4. Wird `location: String` nur noch als bewusster Freitext-Fallback genutzt?
 
 ---
 

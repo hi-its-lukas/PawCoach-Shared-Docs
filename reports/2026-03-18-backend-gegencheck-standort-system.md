@@ -65,21 +65,21 @@
 
 ---
 
-## 6. Verbleibender Gap: Einzelstunde-Bestaetigung
+## 6. Nachgezogener Fix: Einzelstunde-Bestaetigung
 
-**Prioritaet:** NIEDRIG
+**Status:** BEHOBEN
 
-**Datei:** `blueprints/api_admin/requests.py:336-339`
-**Schema:** `api_schemas.py:666-678` (`AdminConfirmEinzelstundeSchema`)
+**Dateien:** `blueprints/api_admin/requests.py`, `api_schemas.py`
 
-`POST /api/admin/einzelstunde-requests/<id>/confirm` akzeptiert nur `location` (String) und `location_type`, aber **kein `location_id`**. Die daraus erzeugte Session wird ohne strukturierten Standort-Bezug angelegt.
+`POST /api/admin/einzelstunde-requests/<id>/confirm` akzeptiert jetzt auch
+`location_id`. Der Handler validiert den Standort tenant-sicher gegen die
+aktuelle Schule und setzt `new_session.location_id` fuer die erzeugte Session.
 
-**Empfohlener Fix:**
-1. `location_id = fields.Integer(allow_none=True)` im Schema ergaenzen
-2. Tenant-Validierung im Handler (analog `_resolve_location_fields()`)
-3. `new_session.location_id` setzen
-
-**Aufwand:** ~10 Zeilen
+Zusatz:
+- `location_type` wird bei strukturiertem Standort sinnvoll aus dem Standort
+  uebernommen, wenn der Request keinen Override schickt
+- Regression ist durch API-Tests fuer gueltige und fremde `location_id`
+  abgesichert
 
 ---
 
@@ -91,6 +91,7 @@
 | Klassisches Web-Admin | Vollstaendig migriert (alle Formulare nutzen `location_id`) |
 | Standort-CRUD in Schuleinstellungen | Implementiert mit Plan-Limits und Loesch-Schutz |
 | Capability-Contract | Korrekt, keine role-only Sonderpfade |
-| Einzelstunde-Bestaetigung | Einziger verbleibender Gap (nur Freitext, kein `location_id`) |
+| Einzelstunde-Bestaetigung | Vollstaendig migriert (`location_id` + Tenant-Validierung) |
 
-**Fazit:** Das Standort-System ist zu ~98% end-to-end integriert. Der einzige offene Punkt ist die Einzelstunde-Bestaetigung — ein Low-Priority-Fix mit minimalem Aufwand.
+**Fazit:** Das Standort-System ist jetzt end-to-end vollstaendig integriert.
+Der vorherige Restpunkt bei der Einzelstunde-Bestaetigung ist geschlossen.

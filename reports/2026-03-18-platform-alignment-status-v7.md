@@ -56,8 +56,7 @@ den Shared Specs, den Developer Guides und `openapi.json`.
   - `AdminLocation`, `AdminLocationsResponse`, `location_id`, `location_object`
   - School-Settings-CRUD mit `max_locations`-Limit-Pruefung
   - Kurs-, Session- und Makeup-Flows
-  - Einzelstunden-Bestaetigung: Backend akzeptiert `location_id`,
-    iOS sendet es noch nicht (optionales Feld, Backend-Fallback greift)
+  - Einzelstunden-Bestaetigung mit optionalem `location_id`
 
 ### Messaging Realtime
 
@@ -70,9 +69,6 @@ den Shared Specs, den Developer Guides und `openapi.json`.
 - `location` bleibt weiterhin als bewusster Freitext-Fallback fuer Sonderfaelle erhalten.
 - `openapi.json` muss nach Backend-Aenderungen immer neu generiert werden, sonst bleibt
   Markdown aktueller als der maschinenlesbare Contract.
-- iOS-Einzelstunden-Bestaetigung (`confirmEinzelstunde`) sendet noch keinen
-  `location_id`-Wert. Backend-Fallback (Standort aus Kurs erben) greift korrekt.
-  Einplanbar als Folgeaufgabe mit niedriger Prioritaet.
 
 ## iOS-Recheck: Abgeschlossen
 
@@ -84,6 +80,8 @@ Der finale iOS-Gegencheck hat alle Pruefpunkte verifiziert:
 4. Capability-Gating: `admin_dashboard`, `forum_moderation` und `max_locations` greifen
    an allen sichtbaren UI-Stellen.
 5. Keine role-only Feature-Gates mehr im produktiven Flow (nur Datenfilterung verbleibt).
+6. Einzelstunden-Bestaetigung sendet optional `location_id` und bleibt ohne Auswahl
+   kompatibel zum Backend-Fallback.
 
 Detaillierter Report: `reports/2026-03-18-ios-location-recheck.md`
 

@@ -13,9 +13,7 @@
 Der iOS-Code wurde in drei Durchlaeufen gegen die Shared-Docs geprueft. Der finale
 Durchlauf bestaetigt: Alle im vorherigen Report als Folgeaufgaben markierten Punkte
 (`admin_dashboard`, `forum_moderation`, `max_locations`) sind umgesetzt und verifiziert.
-
-**Eine letzte Abweichung bleibt:** Die Einzelstunden-Bestaetigung sendet iOS-seitig
-kein `location_id`, obwohl das Backend es jetzt akzeptiert.
+Zusatzlich sendet die Einzelstunden-Bestaetigung jetzt optional `location_id`.
 
 ---
 
@@ -131,30 +129,24 @@ sind Trainer/Kunden in Picker-Listen) — das ist semantisch korrekt und kein Fe
 
 ---
 
-## 5. Einzige verbleibende Abweichung
+## 5. Nachgezogener Confirm-Fix
 
-### `confirmEinzelstunde` sendet kein `location_id`
+### `confirmEinzelstunde` sendet jetzt optional `location_id`
 
 | Aspekt | Detail |
 |--------|--------|
-| **Datei** | `AdminViewModel+Bookings.swift:61-64` |
-| **Code** | `let body = try JSONSerialization.data(withJSONObject: [:] as [String: Any])` |
-| **Problem** | Backend akzeptiert jetzt `location_id` bei `POST /api/admin/einzelstunde-requests/{id}/confirm` (Backend-Gegencheck §6), aber iOS sendet einen leeren Body |
-| **UI** | `AdminRequestsView.swift:240-251` — `EinzelstundeRow` hat keinen Location-Picker |
-| **Impact** | Funktional kein Fehler — `location_id` ist serverseitig optional. Bestaetigte Einzelstunden erben den Standort aus dem Kurs. |
-| **Empfehlung** | `confirmEinzelstunde(id:locationId:)` erweitern und in `EinzelstundeRow` einen optionalen Location-Picker ergaenzen, analog zum MakeupSessionSheet-Pattern |
-| **Prioritaet** | Niedrig — Backend-Fallback greift korrekt |
+| **Datei** | `AdminViewModel+Bookings.swift` |
+| **Code** | `confirmEinzelstunde(id:locationId:)` baut jetzt einen JSON-Body mit optionalem `location_id` |
+| **UI** | `AdminRequestsView.swift` / `EinzelstundeRow` zeigt jetzt einen optionalen Standort-Picker vor der Bestaetigung |
+| **Verhalten** | Ohne Auswahl greift weiter sauber der Backend-Fallback auf den Kurs-Standort |
+| **Status** | ✅ Behoben |
 
 ---
 
-## 6. Nebenbefund (kein Fehler)
+## 6. Nebenbefund (bereinigt)
 
-`ForumViewModel.swift:23-25` — der Fallback-Pfad (wenn `capabilities == nil`) ist
-**toter Code**: `caps.isFeatureEnabled("community_forum")` gibt immer `false` zurueck
-wenn `capabilities` nil ist, daher wird die Rollenlogik in Zeile 25 nie erreicht. Das
-ist das **sichere Verhalten** (kein Zugriff bei fehlenden Capabilities), aber der Code
-erweckt den Eindruck eines Rollen-Fallbacks, der nie greift. Aufraeum-Empfehlung:
-Fallback-Block durch `return false` ersetzen oder den toten Pfad entfernen.
+Der tote Fallback-Pfad in `ForumViewModel.canModerate` wurde entfernt. Ohne geladene
+Capabilities bleibt das Verhalten jetzt explizit fail-closed.
 
 ---
 
@@ -165,10 +157,9 @@ Fallback-Block durch `return false` ersetzen oder den toten Pfad entfernen.
 | `admin_dashboard`, `forum_moderation`, `max_locations` greifen korrekt | ✅ |
 | Standort-Flow konsistent in Settings, Kursen, Sessions und Makeup | ✅ |
 | `location: String` nur Fallback | ✅ |
-| Keine Drift zwischen App-Code, Shared Docs und OpenAPI | ✅ (bis auf Einzelstunden-Confirm) |
+| Keine Drift zwischen App-Code, Shared Docs und OpenAPI | ✅ |
 | Keine alten Workarounds oder role-only Sonderpfade mehr aktiv | ✅ |
 
 Das Standort-System und das Capability-Gating sind end-to-end korrekt integriert.
-Die einzige verbleibende Luecke ist die fehlende `location_id`-Uebergabe bei der
-Einzelstunden-Bestaetigung — funktional abgesichert durch den Backend-Fallback,
-aber als Folgeaufgabe mit niedriger Prioritaet einplanbar.
+Auch die zuvor letzte Restluecke bei der Einzelstunden-Bestaetigung ist jetzt
+geschlossen.

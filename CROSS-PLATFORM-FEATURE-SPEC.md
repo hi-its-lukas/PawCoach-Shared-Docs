@@ -121,6 +121,9 @@ iOS MUSS beide Consent-Felder mit UI-Checkboxen abfragen und als `true` senden.
   - Query-Parameter: `?school_id=X&role=Y` (optional, Default: aktive Schule/Rolle des Users)
   - Response: `{ context, subscription, addons, features, limits, contract_version }`
   - Auth: JWT oder Session (`@jwt_or_session_required`)
+- Wichtige Feature-Keys im Contract sind derzeit insbesondere `admin_dashboard`,
+  `forum_moderation`, `trainer_calendar`, `messaging`, `community_forum`,
+  `voucher_system` und `multi_location_management`.
 - Wichtige Limits im Contract sind derzeit insbesondere `max_trainers`, `max_courses` und `max_locations`.
 - Der kanonische Gutscheinslug fuer Capability- und Billing-Logik ist `gutscheinsystem`.
 - Web und iOS muessen nicht erlaubte Features proaktiv ausblenden. `403` bleibt Absicherung, ist aber nicht das primaere UI-Gating.
