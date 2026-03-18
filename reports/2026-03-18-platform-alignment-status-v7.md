@@ -1,17 +1,18 @@
 # Platform Alignment Status v7
 
-**Datum:** 2026-03-18
+**Datum:** 2026-03-18 (finaler Stand)
 **Scope:** Backend, Web und iOS nach den Pricing-, Capability-, Realtime- und
 Standort-Aenderungen
 
 ## Kurzfazit
 
-Die gemeinsame Architektur ist jetzt deutlich konsistenter dokumentiert als zuvor:
+Die gemeinsame Architektur ist jetzt vollstaendig konsistent:
 
 - Pricing und Entitlements basieren auf einem kanonischen Katalog
 - der Capability-Contract ist die verbindliche Freigabequelle
 - Messaging-Realtime ist als REST + Socket.IO Contract dokumentiert
-- das Standort-System ist als echtes Datenmodell eingefuehrt
+- das Standort-System ist als echtes Datenmodell end-to-end integriert
+- alle sichtbaren UI-Gates nutzen den Capability-Contract
 
 Der stabile Referenzstand liegt nicht mehr in den einzelnen Umsetzungsplaenen, sondern in
 den Shared Specs, den Developer Guides und `openapi.json`.
@@ -34,6 +35,16 @@ den Shared Specs, den Developer Guides und `openapi.json`.
   - Addons
   - Features
   - Limits
+- Wichtige Feature-Keys fuer die Clients sind jetzt explizit:
+  - `admin_dashboard`
+  - `forum_moderation`
+  - `multi_location_management`
+  - `messaging`
+  - `community_forum`
+- iOS nutzt diese Keys an allen sichtbaren UI-Stellen:
+  - `admin_dashboard` fuer Verwaltungstab und Admin-Guard
+  - `forum_moderation` fuer Pin/Lock/Delete in Forum-Views
+  - `max_locations` fuer Standort-Hinzufuegen-Button in Schuleinstellungen
 
 ### Standort-System
 
@@ -41,8 +52,12 @@ den Shared Specs, den Developer Guides und `openapi.json`.
 - Admin-CRUD fuer Standorte ist serverseitig verfuegbar
 - Kurse und Sessions koennen per `location_id` an Standorte gebunden werden
 - Admin-Responses liefern `location_object` fuer Client-Darstellung
-- iOS hat dafuer bereits vorbereitete Contract-Modelle und Endpoints
-  (`AdminLocation`, `AdminLocationsResponse`, `location_id`, `location_object`)
+- iOS und Web nutzen den strukturierten Standortpfad end-to-end:
+  - `AdminLocation`, `AdminLocationsResponse`, `location_id`, `location_object`
+  - School-Settings-CRUD mit `max_locations`-Limit-Pruefung
+  - Kurs-, Session- und Makeup-Flows
+  - Einzelstunden-Bestaetigung: Backend akzeptiert `location_id`,
+    iOS sendet es noch nicht (optionales Feld, Backend-Fallback greift)
 
 ### Messaging Realtime
 
@@ -52,30 +67,25 @@ den Shared Specs, den Developer Guides und `openapi.json`.
 
 ## Noch bekannte Grenzen
 
-- Das Standort-System ist jetzt in Backend, klassischem Web-Admin und iOS-Admin
-  end-to-end angeschlossen:
-  - `SchoolLocation` wird in den Schuleinstellungen verwaltet
-  - Kurs-, Session- und Makeup-Flows nutzen `location_id` als primaeren Pfad
-  - `location` bleibt nur als bewusster Freitext-Fallback fuer Sonderfaelle erhalten
+- `location` bleibt weiterhin als bewusster Freitext-Fallback fuer Sonderfaelle erhalten.
 - `openapi.json` muss nach Backend-Aenderungen immer neu generiert werden, sonst bleibt
   Markdown aktueller als der maschinenlesbare Contract.
+- iOS-Einzelstunden-Bestaetigung (`confirmEinzelstunde`) sendet noch keinen
+  `location_id`-Wert. Backend-Fallback (Standort aus Kurs erben) greift korrekt.
+  Einplanbar als Folgeaufgabe mit niedriger Prioritaet.
 
-## Recheck fuer iOS
+## iOS-Recheck: Abgeschlossen
 
-Der iOS-Entwickler sollte den aktuellen Stand deshalb wie folgt pruefen:
+Der finale iOS-Gegencheck hat alle Pruefpunkte verifiziert:
 
-1. Contract-Ebene:
-   `AdminLocation`, `AdminLocationsResponse`, `location_id` und `location_object`
-   muessen fuer Admin-Courses, Admin-Sessions und School-Settings vorhanden bleiben.
-2. Endpoint-Ebene:
-   `GET/POST/PUT/DELETE /api/admin/locations[/{id}]` muessen im Networking weiterhin
-   abgebildet sein.
-3. Flow-Ebene:
-   School-Settings-CRUD sowie Kurs-, Session- und Makeup-Auswahl muessen dieselben
-   Standorte konsistent verwenden.
-3. Flow-Ebene:
-   Admin-Views und ViewModels muessen noch von string-basierten Ortsfeldern auf einen
-   echten Standort-Flow umgestellt werden.
+1. Contract-Ebene: Alle Models, CodingKeys und Endpoints stimmen mit OpenAPI ueberein.
+2. Endpoint-Ebene: Alle 4 Location-Endpoints identisch mit OpenAPI.
+3. Flow-Ebene: Kurs-, Session-, Makeup- und Settings-Flows nutzen konsistent `location_id`.
+4. Capability-Gating: `admin_dashboard`, `forum_moderation` und `max_locations` greifen
+   an allen sichtbaren UI-Stellen.
+5. Keine role-only Feature-Gates mehr im produktiven Flow (nur Datenfilterung verbleibt).
+
+Detaillierter Report: `reports/2026-03-18-ios-location-recheck.md`
 
 ## Doku-Policy ab jetzt
 

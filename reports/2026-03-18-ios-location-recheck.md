@@ -1,8 +1,8 @@
-# iOS Standort-System — Gegencheck nach Integration
+# iOS Standort-System — Finaler Gegencheck
 
-**Datum:** 2026-03-18 (zweiter Durchlauf)
+**Datum:** 2026-03-18 (dritter Durchlauf — final)
 **Durchgeführt von:** iOS-Agent (Claude Code)
-**Anlass:** Abschluss der End-to-End-Integration des Standort-Systems in Backend, Web-Admin und iOS-Admin
+**Anlass:** Finaler Gegencheck nach Schliessung aller offenen Punkte
 **Zielgruppe:** Head of Development
 **Methode:** Quelldateien zeilenweise gelesen und gegen OpenAPI + Shared-Docs abgeglichen
 
@@ -10,14 +10,12 @@
 
 ## Zusammenfassung
 
-Der iOS-Code wurde in zwei unabhängigen Durchläufen systematisch gegen die Shared-Docs geprüft:
-- `CROSS-PLATFORM-FEATURE-SPEC.md` (v7)
-- `CROSS-PLATFORM-SYNC-STRATEGY.md`
-- `IOS-DEVELOPER-GUIDE.md`
-- `BACKEND-DEVELOPER-GUIDE.md`
-- `openapi.json`
+Der iOS-Code wurde in drei Durchlaeufen gegen die Shared-Docs geprueft. Der finale
+Durchlauf bestaetigt: Alle im vorherigen Report als Folgeaufgaben markierten Punkte
+(`admin_dashboard`, `forum_moderation`, `max_locations`) sind umgesetzt und verifiziert.
 
-**Ergebnis: Alle drei Kernfragen sind positiv beantwortet. Beide Durchläufe kommen zum selben Ergebnis.**
+**Eine letzte Abweichung bleibt:** Die Einzelstunden-Bestaetigung sendet iOS-seitig
+kein `location_id`, obwohl das Backend es jetzt akzeptiert.
 
 ---
 
@@ -34,7 +32,7 @@ Der iOS-Code wurde in zwei unabhängigen Durchläufen systematisch gegen die Sha
 
 ### Models: CodingKeys vs. Backend snake_case
 
-| Prüfpunkt | Status | Datei / Zeile |
+| Pruefpunkt | Status | Datei / Zeile |
 |-----------|:------:|---------------|
 | `AdminLocation` (id, name, slug, address, city, postal_code, notes, location_type, lat, lng, is_default, is_active, display_label) | ✅ | `AdminModels.swift:100-123` |
 | `AdminLocationsResponse` | ✅ | `AdminModels.swift:7` |
@@ -50,15 +48,45 @@ Der iOS-Code wurde in zwei unabhängigen Durchläufen systematisch gegen die Sha
 
 ---
 
-## 2. Flow-Konsistenz (Settings, Kurse, Sessions, Makeup)
+## 2. Capability-driven UI-Gating (neu verifiziert)
+
+### `admin_dashboard`
+
+| Stelle | Code | Status |
+|--------|------|:------:|
+| `AdminViewModel.swift:73-78` | `caps.isFeatureEnabled("admin_dashboard")` mit Keychain-Fallback | ✅ |
+| `MainTabView.swift:115-116` | `caps.isFeatureEnabled("admin_dashboard") && !user.platformAdmin` | ✅ |
+| `MoreMenuView.swift:36` | `capabilityStore.isFeatureEnabled("admin_dashboard")` | ✅ |
+
+### `forum_moderation`
+
+| Stelle | Code | Status |
+|--------|------|:------:|
+| `ForumViewModel.swift:18-21` | `caps.isFeatureEnabled("forum_moderation")` steuert `canModerate` | ✅ |
+| `ThreadDetailView.swift:9-10` | Delegiert an `viewModel.canModerate` | ✅ |
+| `ThreadDetailView.swift:51,60,97` | Pin, Lock, Delete nur bei `canModerate` sichtbar | ✅ |
+
+### `max_locations`
+
+| Stelle | Code | Status |
+|--------|------|:------:|
+| `SchoolSettingsView.swift:7` | `@State private var capabilityStore = CapabilityStore.shared` | ✅ |
+| `SchoolSettingsView.swift:348-349` | `capabilityStore.limit(for: "max_locations")` | ✅ |
+| `SchoolSettingsView.swift:352-354` | `canCreateLocation` prueft `count < maxLocations` | ✅ |
+| `SchoolSettingsView.swift:333-337` | Hinweistext bei erreichtem Limit | ✅ |
+| `SchoolSettingsView.swift:344` | `.disabled(!canCreateLocation)` auf Button | ✅ |
+
+---
+
+## 3. Flow-Konsistenz (Settings, Kurse, Sessions, Makeup)
 
 ### Identisches Pattern in allen drei Editoren
 
 | Verhalten | CourseEditView | AdminSessionEditView | MakeupSessionSheet |
 |-----------|:-:|:-:|:-:|
-| Picker `selectedLocationId` als Primärpfad | ✅ `:216-221` | ✅ `:87-92` | ✅ `:230-235` |
+| Picker `selectedLocationId` als Primaerpfad | ✅ `:216-221` | ✅ `:87-92` | ✅ `:230-235` |
 | Fallback-TextField nur wenn `selectedLocationId == nil` | ✅ `:223-224` | ✅ `:93-94` | ✅ `:236-237` |
-| Read-only Label wenn Standort gewählt | ✅ `:225-230` | ✅ `:95-100` | ✅ `:238-243` |
+| Read-only Label wenn Standort gewaehlt | ✅ `:225-230` | ✅ `:95-100` | ✅ `:238-243` |
 | onChange: `locationType` auto-populate aus Standort | ✅ `:241-247` | ✅ `:116-122` | ✅ `:254-260` |
 | Save: `location` nur gesendet wenn kein `locationId` | ✅ `:328` | ✅ `:168` | ✅ `:287` |
 | Save: `locationId` wird immer gesendet | ✅ `:329` | ✅ `:169` | ✅ `:288` |
@@ -70,61 +98,63 @@ Der iOS-Code wurde in zwei unabhängigen Durchläufen systematisch gegen die Sha
 |---------|-------|:------:|
 | Standort-Liste mit Name, Standard-Badge, Inaktiv-Badge | `:287-329` | ✅ |
 | Bearbeiten-Button → Sheet mit `editingLocation` | `:317-319` → `:248-250` | ✅ |
-| Löschen-Button → Bestätigungsdialog mit Warnung | `:321-323` → `:251-275` | ✅ |
-| Hinzufügen-Button → Create-Sheet | `:332-336` → `:245-247` | ✅ |
+| Loeschen-Button → Bestaetigungsdialog mit Warnung | `:321-323` → `:251-275` | ✅ |
+| Hinzufuegen-Button → Create-Sheet (limit-aware) | `:332-344` | ✅ |
 | LocationEditorSheet: Name, Adresse, PLZ, Stadt, Typ, Notizen, Standard, Aktiv | `:391-506` | ✅ |
 | Save ruft `createLocation()` oder `updateLocation()` | `:496-500` | ✅ |
 | Standorte und Settings werden initial geladen | `:240-241` | ✅ |
 | ContentUnavailableView bei leerer Standortliste | `:281-285` | ✅ |
 
-### AdminViewModel+Settings: Location-Methoden
-
-| Methode | Zeile | Endpoint | Nachverarbeitung |
-|---------|-------|----------|-----------------|
-| `loadLocations()` | `:35-42` | GET `/api/admin/locations` | Array befüllen |
-| `createLocation(_:)` | `:44-59` | POST `/api/admin/locations` | Append + Sort + Settings reload |
-| `updateLocation(id:form:)` | `:61-80` | PUT `/api/admin/locations/{id}` | Replace + Sort + Settings reload |
-| `deleteLocation(id:)` | `:82-92` | DELETE `/api/admin/locations/{id}` | Remove + Settings reload |
-
-Settings-Reload nach Mutation stellt sicher, dass `AdminSchoolSettings.locations` konsistent bleibt.
-
 ---
 
-## 3. Alte Workarounds / Sonderpfade
+## 4. Alte Workarounds / Sonderpfade
 
-| Prüfpunkt | Ergebnis | Evidenz |
+| Pruefpunkt | Ergebnis | Evidenz |
 |-----------|:--------:|---------|
-| Polling statt Socket.IO | ✅ Keines | WebSocketManager nutzt durchgehend event-driven Architektur |
-| Versteckte Alternate-Endpoints | ✅ Keine | Alle 4 Location-Endpoints identisch mit OpenAPI |
-| `location` String als Primärpfad | ✅ Nirgends | Alle Editoren: `selectedLocationId` primär, TextField nur als Fallback |
+| Polling statt Socket.IO | ✅ Keines | WebSocketManager event-driven |
+| Versteckte Alternate-Endpoints | ✅ Keine | Alle Location-Endpoints identisch mit OpenAPI |
+| `location` String als Primaerpfad | ✅ Nirgends | Alle Editoren: `selectedLocationId` primaer |
 | Clientseitige Standort-Sonderlogik | ✅ Keine | Kein client-only Handling |
-| Locations hart im Code statt vom Backend | ✅ Nein | Alle Daten via API geladen |
+| Role-only Feature-Gating | ✅ Behoben | `admin_dashboard`, `forum_moderation` jetzt capability-driven |
+| Role-only Limit-Gating | ✅ Behoben | `max_locations` jetzt capability-driven |
+
+Verbleibende Rollenstring-Checks sind ausschliesslich **Datenfilterung** (welche User
+sind Trainer/Kunden in Picker-Listen) — das ist semantisch korrekt und kein Feature-Gating:
+
+| Datei | Zeile | Zweck |
+|-------|-------|-------|
+| `CourseEditView.swift` | `:50` | Trainer-Picker: `.role == "trainer"` |
+| `AdminSessionCreateView.swift` | `:48` | Trainer-Picker: `.role == "trainer"` |
+| `AdminAvailabilityView.swift` | `:115` | Trainer-Filter: `.role == "trainer" \|\| .role == "admin"` |
+| `AdminDirectBookingView.swift` | `:15` | Kunden-Picker: `.role == "customer"` |
+| `AdminDogEditView.swift` | `:289` | Kunden-Picker: `.role == "customer"` |
 
 ---
 
-## 4. Offene Punkte (kein Blocker)
+## 5. Einzige verbleibende Abweichung
 
-### a) `max_locations` UI-Gating fehlt
+### `confirmEinzelstunde` sendet kein `location_id`
 
-- **Stelle:** `SchoolSettingsView.swift:332-336` — Button "Standort hinzufügen" ist immer aktiv
-- **Infrastruktur vorhanden:** `CapabilityStore.limit(for: "max_locations")` existiert (`CapabilityStore.swift:32-36`)
-- **Backend-Absicherung:** Serverseitig wird korrekt mit 403 geblockt
-- **Empfehlung:** Proaktives UI-Gating ergänzen — Button disablen und Hinweistext anzeigen wenn Limit erreicht. Geschätzter Aufwand: Einzeiler plus optionaler Hinweistext.
+| Aspekt | Detail |
+|--------|--------|
+| **Datei** | `AdminViewModel+Bookings.swift:61-64` |
+| **Code** | `let body = try JSONSerialization.data(withJSONObject: [:] as [String: Any])` |
+| **Problem** | Backend akzeptiert jetzt `location_id` bei `POST /api/admin/einzelstunde-requests/{id}/confirm` (Backend-Gegencheck §6), aber iOS sendet einen leeren Body |
+| **UI** | `AdminRequestsView.swift:240-251` — `EinzelstundeRow` hat keinen Location-Picker |
+| **Impact** | Funktional kein Fehler — `location_id` ist serverseitig optional. Bestaetigte Einzelstunden erben den Standort aus dem Kurs. |
+| **Empfehlung** | `confirmEinzelstunde(id:locationId:)` erweitern und in `EinzelstundeRow` einen optionalen Location-Picker ergaenzen, analog zum MakeupSessionSheet-Pattern |
+| **Prioritaet** | Niedrig — Backend-Fallback greift korrekt |
 
-### b) Rollenstring-Checks in nicht-standortbezogenen Admin-Views
+---
 
-Folgende Stellen nutzen Rollenstrings statt Capabilities — betreffen aber **nicht** den Standort-Flow:
+## 6. Nebenbefund (kein Fehler)
 
-| Datei | Zeile | Pattern | Einordnung |
-|-------|-------|---------|------------|
-| `AdminViewModel.swift` | 72-75 | `KeychainHelper.read("activeRole") == "admin"` | Client-side Guard, kein Feature-Gating |
-| `MainTabView.swift` | 116 | `caps.currentRole == "admin"` für admin_dashboard | Sollte langfristig Capability-Key nutzen |
-| `CourseEditView.swift` | 50 | `.role == "trainer"` | **Datenfilterung** — semantisch korrekt |
-| `AdminSessionCreateView.swift` | 48 | `.role == "trainer"` | **Datenfilterung** — semantisch korrekt |
-| `AdminAvailabilityView.swift` | 115 | `.role == "trainer" \|\| .role == "admin"` | **Datenfilterung** — semantisch korrekt |
-| `ForumViewModel.swift` | 23 | `role == "admin" \|\| role == "trainer"` | Feature-Gating, sollte Capability nutzen |
-
-**Einordnung:** Die Trainer/Customer-Filterung in Listen ist **Datenfilterung** (welche User haben welche Rolle), nicht Feature-Gating — das ist korrekt und muss nicht migriert werden. `isAdmin` und `admin_dashboard` sollten langfristig über einen Capability-Key laufen, sind aber funktional kein Problem.
+`ForumViewModel.swift:23-25` — der Fallback-Pfad (wenn `capabilities == nil`) ist
+**toter Code**: `caps.isFeatureEnabled("community_forum")` gibt immer `false` zurueck
+wenn `capabilities` nil ist, daher wird die Rollenlogik in Zeile 25 nie erreicht. Das
+ist das **sichere Verhalten** (kein Zugriff bei fehlenden Capabilities), aber der Code
+erweckt den Eindruck eines Rollen-Fallbacks, der nie greift. Aufraeum-Empfehlung:
+Fallback-Block durch `return false` ersetzen oder den toten Pfad entfernen.
 
 ---
 
@@ -132,14 +162,13 @@ Folgende Stellen nutzen Rollenstrings statt Capabilities — betreffen aber **ni
 
 | Kernfrage | Ergebnis |
 |-----------|:--------:|
-| Frontend, Backend und App verhalten sich identisch gegen denselben Contract | ✅ Ja |
-| Standort-Flow funktioniert konsistent in Settings, Kursen und Sessions | ✅ Ja |
-| Keine alten Workarounds oder role-only Sonderpfade im Standort-Bereich aktiv | ✅ Ja |
+| `admin_dashboard`, `forum_moderation`, `max_locations` greifen korrekt | ✅ |
+| Standort-Flow konsistent in Settings, Kursen, Sessions und Makeup | ✅ |
+| `location: String` nur Fallback | ✅ |
+| Keine Drift zwischen App-Code, Shared Docs und OpenAPI | ✅ (bis auf Einzelstunden-Confirm) |
+| Keine alten Workarounds oder role-only Sonderpfade mehr aktiv | ✅ |
 
-Das Standort-System ist end-to-end korrekt integriert. Beide Check-Durchläufe bestätigen dasselbe Ergebnis. Die offenen Punkte (`max_locations`-UI-Gating, Capability-Migration für nicht-standortbezogene Checks) sind keine Blocker und können als eigenständige Folgeaufgaben eingeplant werden.
-
-### Empfohlene Folgeaufgaben (Prio niedrig)
-
-1. `max_locations`-Limit im UI prüfen bevor "Standort hinzufügen" aktiv ist
-2. `AdminViewModel.isAdmin` auf Capability-Query umstellen
-3. `ForumViewModel.canPostReview` auf Capability-Query umstellen
+Das Standort-System und das Capability-Gating sind end-to-end korrekt integriert.
+Die einzige verbleibende Luecke ist die fehlende `location_id`-Uebergabe bei der
+Einzelstunden-Bestaetigung — funktional abgesichert durch den Backend-Fallback,
+aber als Folgeaufgabe mit niedriger Prioritaet einplanbar.
