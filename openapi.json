@@ -2,7 +2,7 @@
   "openapi": "3.0.3",
   "info": {
     "title": "PawCoach API",
-    "version": "2026-03-16",
+    "version": "2026-03-18",
     "description": "Auto-generierte API-Spezifikation aus Flask-Routes. Dient als Contract zwischen Backend, Web-Frontend und iOS-App."
   },
   "servers": [
@@ -2404,6 +2404,156 @@
         "parameters": [
           {
             "name": "invoice_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Erfolgreiche Antwort"
+          },
+          "401": {
+            "description": "Nicht authentifiziert"
+          },
+          "403": {
+            "description": "Keine Berechtigung"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          },
+          {
+            "sessionAuth": []
+          }
+        ]
+      }
+    },
+    "/api/admin/locations": {
+      "get": {
+        "tags": [
+          "admin"
+        ],
+        "operationId": "api_admin.list_locations",
+        "summary": "Api Admin — List Locations",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Erfolgreiche Antwort"
+          },
+          "401": {
+            "description": "Nicht authentifiziert"
+          },
+          "403": {
+            "description": "Keine Berechtigung"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          },
+          {
+            "sessionAuth": []
+          }
+        ]
+      },
+      "post": {
+        "tags": [
+          "admin"
+        ],
+        "operationId": "api_admin.create_location",
+        "summary": "Api Admin — Create Location",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Erfolgreiche Antwort"
+          },
+          "401": {
+            "description": "Nicht authentifiziert"
+          },
+          "403": {
+            "description": "Keine Berechtigung"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          },
+          {
+            "sessionAuth": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object"
+              }
+            }
+          },
+          "required": false
+        }
+      }
+    },
+    "/api/admin/locations/{location_id}": {
+      "put": {
+        "tags": [
+          "admin"
+        ],
+        "operationId": "api_admin.update_location",
+        "summary": "Api Admin — Update Location",
+        "parameters": [
+          {
+            "name": "location_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Erfolgreiche Antwort"
+          },
+          "401": {
+            "description": "Nicht authentifiziert"
+          },
+          "403": {
+            "description": "Keine Berechtigung"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          },
+          {
+            "sessionAuth": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object"
+              }
+            }
+          },
+          "required": false
+        }
+      },
+      "delete": {
+        "tags": [
+          "admin"
+        ],
+        "operationId": "api_admin.delete_location",
+        "summary": "Api Admin — Delete Location",
+        "parameters": [
+          {
+            "name": "location_id",
             "in": "path",
             "required": true,
             "schema": {
@@ -5507,6 +5657,35 @@
         ]
       }
     },
+    "/api/auth/capabilities": {
+      "get": {
+        "tags": [
+          "auth"
+        ],
+        "operationId": "api_auth.get_capabilities_endpoint",
+        "summary": "Api Auth — Get Capabilities Endpoint",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Erfolgreiche Antwort"
+          },
+          "401": {
+            "description": "Nicht authentifiziert"
+          },
+          "403": {
+            "description": "Keine Berechtigung"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          },
+          {
+            "sessionAuth": []
+          }
+        ]
+      }
+    },
     "/api/auth/confirm/{token}": {
       "get": {
         "tags": [
@@ -5534,15 +5713,7 @@
           "403": {
             "description": "Keine Berechtigung"
           }
-        },
-        "security": [
-          {
-            "bearerAuth": []
-          },
-          {
-            "sessionAuth": []
-          }
-        ]
+        }
       }
     },
     "/api/auth/forgot-password": {
@@ -5564,14 +5735,6 @@
             "description": "Keine Berechtigung"
           }
         },
-        "security": [
-          {
-            "bearerAuth": []
-          },
-          {
-            "sessionAuth": []
-          }
-        ],
         "requestBody": {
           "content": {
             "application/json": {
@@ -6114,14 +6277,6 @@
             "description": "Keine Berechtigung"
           }
         },
-        "security": [
-          {
-            "bearerAuth": []
-          },
-          {
-            "sessionAuth": []
-          }
-        ],
         "requestBody": {
           "content": {
             "application/json": {
@@ -11347,6 +11502,27 @@
             }
           },
           "required": false
+        }
+      }
+    },
+    "/api/public/pricing": {
+      "get": {
+        "tags": [
+          "public"
+        ],
+        "operationId": "api_public.public_pricing",
+        "summary": "Api Public — Public Pricing",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Erfolgreiche Antwort"
+          },
+          "401": {
+            "description": "Nicht authentifiziert"
+          },
+          "403": {
+            "description": "Keine Berechtigung"
+          }
         }
       }
     },

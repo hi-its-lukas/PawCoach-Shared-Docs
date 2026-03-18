@@ -1,6 +1,6 @@
 # PawCoach — Cross-Platform Feature-Spezifikation (Unified)
 
-**Version:** 2026-03-17-v6
+**Version:** 2026-03-18-v7
 **Plattformen:** Backend (Flask/Python) | Web-Frontend (Jinja2+JS) | iOS (Swift/SwiftUI)
 **Zweck:** Zentrales Dokument fuer ALLE Plattformen. Die kanonische Quelle ist `PawCoach-Shared-Docs`.
 
@@ -121,6 +121,8 @@ iOS MUSS beide Consent-Felder mit UI-Checkboxen abfragen und als `true` senden.
   - Query-Parameter: `?school_id=X&role=Y` (optional, Default: aktive Schule/Rolle des Users)
   - Response: `{ context, subscription, addons, features, limits, contract_version }`
   - Auth: JWT oder Session (`@jwt_or_session_required`)
+- Wichtige Limits im Contract sind derzeit insbesondere `max_trainers`, `max_courses` und `max_locations`.
+- Der kanonische Gutscheinslug fuer Capability- und Billing-Logik ist `gutscheinsystem`.
 - Web und iOS muessen nicht erlaubte Features proaktiv ausblenden. `403` bleibt Absicherung, ist aber nicht das primaere UI-Gating.
 
 ---
@@ -266,6 +268,22 @@ Endpoint: `GET /api/admin/dashboard` — KPIs: totalCustomers, totalTrainers, to
 | Absender-Email | `GET/POST/DELETE /api/admin/settings/sender-email` |
 | Beitrittscode QR | `GET /api/admin/settings/join-code-qr` |
 | Beitrittscode erneuern | `POST /api/admin/settings/regenerate-join-code` |
+
+### Standorte
+
+| Feature | Endpoint |
+|---------|----------|
+| Standorte auflisten | `GET /api/admin/locations` |
+| Standort anlegen | `POST /api/admin/locations` |
+| Standort bearbeiten | `PUT /api/admin/locations/{id}` |
+| Standort loeschen | `DELETE /api/admin/locations/{id}` |
+
+**Regeln:**
+
+- Standorte werden als eigenes Fachmodell verwaltet, nicht nur als Freitextfeld.
+- Kurse und Sessions koennen optional per `location_id` an einen Standort gebunden werden.
+- Session-Standorte ueberschreiben den Standardstandort des Kurses.
+- Der Mehr-Standort-Betrieb ist ueber Plan und `max_locations` begrenzt.
 
 ### Anfragen-Verwaltung
 
@@ -511,6 +529,7 @@ Endpoint: `GET /api/admin/dashboard` — KPIs: totalCustomers, totalTrainers, to
 | Feature | Endpoint | Backend | Web | iOS |
 |---------|----------|:-------:|:---:|:---:|
 | Als zugestellt markieren | `POST /api/messages/{id}/delivered` | Ja | - | Ja |
+| Als gelesen markieren | `POST /api/messages/{id}/read` | Ja | Ja | Ja |
 | Nachrichteninfo | `GET /api/messages/info/{messageId}` | Ja | - | Ja (Swipe-Left) |
 | Chat-Suche | `GET /api/messages/{id}/search?q={term}` | Ja | Ja | Lokal |
 | Medien-Zaehler | `GET /api/messages/{id}/media` | Ja | - | Ja |
@@ -644,6 +663,8 @@ Beim Tap/Klick auf den Chat-Namen:
 | Event | Payload | Zweck |
 |-------|---------|-------|
 | `new_message` | Serialisiertes Message-Objekt | Neue Nachricht |
+| `message_receipts_updated` | `{conversation_id, updates: [{message_id, delivered_at, read_at, delivery_status}]}` | Zustell- und Lesestatus aktualisiert |
+| `presence_update` | `{user_id, is_online, last_seen, updated_at}` | Online-Status eines Chat-Partners |
 | `unread_update` | `{}` | Ungelesene-Zaehler neu laden |
 | `user_typing` | `{user_id, user_name}` | Jemand tippt |
 | `reaction_update` | `{message_id, reactions: [{emoji, count, users}]}` | Reaktion geaendert |
@@ -655,6 +676,12 @@ Beim Tap/Klick auf den Chat-Namen:
 | `live_location_ended` | `{session_id, conversation_id}` | Live-Standort beendet |
 | `location_update` | `{session_id, user_id, user_name, latitude, longitude, accuracy}` | Position aktualisiert |
 | `error` | `{message}` | Fehlermeldung |
+
+**Hinweise zum Messaging-Contract:**
+
+- `POST /api/messages/{id}` akzeptiert optional `client_message_id` fuer Client-Reconciliation.
+- REST bleibt der Write-Path; Socket.IO bestaetigt und verteilt den Live-State.
+- Push ist fuer Offline-Benachrichtigung und Deep Link, nicht fuer In-App-State.
 
 ### Live-Location — UI-Verhalten (alle Plattformen)
 
@@ -792,6 +819,28 @@ muessen danach fuer alle Clients ueber den gemeinsamen Capability-Contract verfu
 | `/billing` | Abo-Verwaltung |
 | `/addons` | Addon-Verwaltung |
 
+### Kanonischer Produktkatalog
+
+Der oeffentliche und interne Pricing-Stand basiert auf einem gemeinsamen Katalog.
+
+| Technische Plan-ID | Marketing | Monatlich | Jaehrlich | Kernlimit |
+|--------------------|-----------|-----------|-----------|-----------|
+| `starter` | Start | 39 EUR | 390 EUR | `max_locations = 1` |
+| `professional` | Growth | 89 EUR | 890 EUR | `max_locations = 3` |
+| `enterprise` | Scale | 169 EUR | 1690 EUR | `max_locations = null` |
+
+### Public Pricing API
+
+| Endpoint | Zweck |
+|----------|-------|
+| `GET /api/public/pricing` | Kanonische Plan- und Addon-Daten fuer oeffentliche Darstellung |
+
+### Addon-Regeln
+
+- `messaging` ist in allen Plaenen enthalten und kein kostenpflichtiges Addon mehr.
+- `gutscheinsystem` ist ab `professional` inkludiert.
+- `community_forum` ist in `enterprise` inkludiert und darunter optional.
+
 ### Stripe-Webhooks
 
 | Event | Aktion |
@@ -837,4 +886,4 @@ muessen danach fuer alle Clients ueber den gemeinsamen Capability-Contract verfu
 | iOS-Screens | ~80 |
 | Benutzerrollen | 4 |
 | Feature-Bereiche | 12 |
-| Real-Time Events (Socket.IO) | 8 |
+| Real-Time Events (Socket.IO) | ~12 |
