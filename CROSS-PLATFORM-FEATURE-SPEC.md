@@ -1,6 +1,6 @@
 # PawCoach — Cross-Platform Feature-Spezifikation (Unified)
 
-**Version:** 2026-03-18-v7
+**Version:** 2026-03-19-v7
 **Plattformen:** Backend (Flask/Python) | Web-Frontend (Jinja2+JS) | iOS (Swift/SwiftUI)
 **Zweck:** Zentrales Dokument fuer ALLE Plattformen. Die kanonische Quelle ist `PawCoach-Shared-Docs`.
 
@@ -368,6 +368,9 @@ Contract-Hinweise:
   `cancel_at`, `cancel_reason`, `cancel_note`, `cancel_reason_options` und
   `available_plans`.
 - `POST /api/admin/subscription/cancel` erwartet zwingend `reason` und optional `note`.
+- Derzeit definierte `cancel_reason_options` sind:
+  `too_expensive`, `missing_features`, `too_complex`, `switching_provider`,
+  `business_closure`, `technical_issues`, `support_quality`, `other`.
 - Das Stripe-Portal dient nur fuer Zahlungsdaten; die serverseitige Kuendigungslogik mit
   1 Monat Frist ist davon getrennt.
 - Jahresabos muessen ueber `billing_period=yearly` gegen eigene jaehrliche Stripe-Preise

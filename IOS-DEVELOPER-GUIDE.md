@@ -152,6 +152,12 @@ abbilden. Kritisch sind derzeit insbesondere:
   lokal verdrahteten Legacy-Labels.
 - `POST /api/admin/subscription/cancel` verlangt einen Pflicht-Grund und optionalen
   Hinweis.
+- Die aktuell dokumentierten `cancel_reason_options` sind:
+  `too_expensive`, `missing_features`, `too_complex`, `switching_provider`,
+  `business_closure`, `technical_issues`, `support_quality`, `other`.
+- iOS sollte die vom Backend gelieferten `cancel_reason_options` immer als Quelle der
+  Wahrheit verwenden; die obige Liste dient nur als explizit dokumentierter
+  Cross-Platform-Contract.
 - `POST /api/admin/subscription/cancel/undo` nimmt die Vormerkung zurueck.
 - Das Stripe-Portal in der App bleibt fuer Zahlungsdaten; der eigentliche
   Kuendigungsablauf liegt in App- und Backend-Logik.
