@@ -138,6 +138,23 @@ abbilden. Kritisch sind derzeit insbesondere:
 - `delivery_status`
 - `delivered_at`
 - `read_at`
+- `plan_name`
+- `billing_period`
+- `cancel_at`
+- `cancel_reason`
+- `cancel_note`
+- `cancel_reason_options`
+- `available_plans`
+
+### 4. Billing in der App
+
+- Die Admin-Aboansicht muss Planbezeichnungen aus dem Backend-Contract lesen, nicht aus
+  lokal verdrahteten Legacy-Labels.
+- `POST /api/admin/subscription/cancel` verlangt einen Pflicht-Grund und optionalen
+  Hinweis.
+- `POST /api/admin/subscription/cancel/undo` nimmt die Vormerkung zurueck.
+- Das Stripe-Portal in der App bleibt fuer Zahlungsdaten; der eigentliche
+  Kuendigungsablauf liegt in App- und Backend-Logik.
 - `location_id`
 - `location_object`
 - `location_address`

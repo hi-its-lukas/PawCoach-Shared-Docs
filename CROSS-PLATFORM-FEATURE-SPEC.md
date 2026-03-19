@@ -358,8 +358,20 @@ Endpoint: `GET /api/admin/dashboard` — KPIs: totalCustomers, totalTrainers, to
 | Abo-Info | `GET /api/admin/subscription` |
 | Plan aendern | `PUT /api/admin/subscription/plan` |
 | Abo kuendigen | `POST /api/admin/subscription/cancel` |
+| Kuendigung zuruecknehmen | `POST /api/admin/subscription/cancel/undo` |
 | Addons | `GET /api/admin/addons` |
 | Addon umschalten/kaufen/deaktivieren | `POST /api/admin/addons/{id}/toggle`, `.../{slug}/checkout`, `.../{slug}/deactivate` |
+
+Contract-Hinweise:
+
+- `GET /api/admin/subscription` liefert zusaetzlich `plan_name`, `billing_period`,
+  `cancel_at`, `cancel_reason`, `cancel_note`, `cancel_reason_options` und
+  `available_plans`.
+- `POST /api/admin/subscription/cancel` erwartet zwingend `reason` und optional `note`.
+- Das Stripe-Portal dient nur fuer Zahlungsdaten; die serverseitige Kuendigungslogik mit
+  1 Monat Frist ist davon getrennt.
+- Jahresabos muessen ueber `billing_period=yearly` gegen eigene jaehrliche Stripe-Preise
+  laufen.
 
 ### Umfragen & Bewertungen
 

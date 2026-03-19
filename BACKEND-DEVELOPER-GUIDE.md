@@ -42,6 +42,19 @@ Entitlements, Pricing, Standorte und Messaging-Realtime.
 - Landingpage, Registrierung und Billing muessen sich aus demselben Katalog speisen.
 - Keine zweite statische Planquelle in Templates oder Views.
 
+### 3a. Billing- und Kuendigungslogik
+
+- Monats- und Jahresabos nutzen getrennte Stripe-Price-IDs.
+- `billing_period` muss in Checkout, Webhooks, Profilstatus und Admin-Responses
+  konsistent gespiegelt werden.
+- Das Stripe-Portal ist nur fuer Zahlungsdaten und Zahlungsarten gedacht.
+- Kuendigungen laufen ueber den serverseitigen Flow:
+  - `POST /api/admin/subscription/cancel`
+  - `POST /api/admin/subscription/cancel/undo`
+- Beim Vormerken ist `reason` Pflicht, `note` optional.
+- Die 1-Monats-Frist wird serverseitig berechnet; bei Jahresabos gegen die naechste
+  Verlaengerung.
+
 ### 4. Standort-System
 
 - Kanonisches Datenmodell: `SchoolLocation`

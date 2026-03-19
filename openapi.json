@@ -4080,6 +4080,84 @@
         ]
       }
     },
+    "/api/admin/subscription/cancel": {
+      "post": {
+        "tags": [
+          "admin"
+        ],
+        "operationId": "api_admin.cancel_subscription",
+        "summary": "Api Admin — Cancel Subscription",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Erfolgreiche Antwort"
+          },
+          "401": {
+            "description": "Nicht authentifiziert"
+          },
+          "403": {
+            "description": "Keine Berechtigung"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          },
+          {
+            "sessionAuth": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object"
+              }
+            }
+          },
+          "required": false
+        }
+      }
+    },
+    "/api/admin/subscription/cancel/undo": {
+      "post": {
+        "tags": [
+          "admin"
+        ],
+        "operationId": "api_admin.undo_cancel_subscription",
+        "summary": "Api Admin — Undo Cancel Subscription",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Erfolgreiche Antwort"
+          },
+          "401": {
+            "description": "Nicht authentifiziert"
+          },
+          "403": {
+            "description": "Keine Berechtigung"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          },
+          {
+            "sessionAuth": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object"
+              }
+            }
+          },
+          "required": false
+        }
+      }
+    },
     "/api/admin/subscription/plan": {
       "put": {
         "tags": [
@@ -10877,6 +10955,54 @@
         ],
         "operationId": "api_platform_admin.update_plan_price",
         "summary": "Api Platform Admin — Update Plan Price",
+        "parameters": [
+          {
+            "name": "plan_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Erfolgreiche Antwort"
+          },
+          "401": {
+            "description": "Nicht authentifiziert"
+          },
+          "403": {
+            "description": "Keine Berechtigung"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          },
+          {
+            "sessionAuth": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object"
+              }
+            }
+          },
+          "required": false
+        }
+      }
+    },
+    "/api/platform/prices/plans/{plan_id}/content": {
+      "put": {
+        "tags": [
+          "platform"
+        ],
+        "operationId": "api_platform_admin.update_plan_content",
+        "summary": "Api Platform Admin — Update Plan Content",
         "parameters": [
           {
             "name": "plan_id",

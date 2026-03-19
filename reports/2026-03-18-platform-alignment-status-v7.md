@@ -94,3 +94,13 @@ Detaillierter Report: `reports/2026-03-18-ios-location-recheck.md`
 - Aktive Arbeit -> `plans/`
 - Stabile Wahrheit -> Shared Specs, Guides, Reports, OpenAPI
 - Erledigte Plaene werden geloescht
+## Billing-Stand 2026-03-19
+
+- Monats- und Jahrespreise sind im Self-Serve-Checkout getrennt verdrahtet.
+- Admin-Web und iOS bilden denselben serverseitigen Kuendigungsflow ab:
+  - Pflichtfeld `reason`
+  - optionales `note`
+  - serverseitiges Vormerken mit 1 Monat Frist
+  - Ruecknahme ueber `cancel/undo`
+- Das Stripe-Portal bleibt auf Zahlungsdaten begrenzt und ist nicht mehr der fuehrende
+  Kuendigungspfad.
