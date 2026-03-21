@@ -190,8 +190,8 @@ Endpoint: `GET /api/customer/dashboard` — Meine Hunde, Naechste Termine, Aktiv
 | Feature | Endpoint |
 |---------|----------|
 | Produkte anzeigen | `GET /api/customer/products` |
-| Kreditkarten anzeigen | `GET /api/customer/credits` |
-| Kreditkarte kaufen | `POST /api/customer/einzelstunde/{courseId}/buy-card` |
+| Guthabenkarten anzeigen | `GET /api/customer/credits` |
+| Guthabenkarte kaufen | `POST /api/customer/einzelstunde/{courseId}/buy-card` |
 | Checkout starten | `POST /api/customer/checkout` (body: `{product_id, dog_id}`) |
 | Checkout-Status | `GET /api/customer/checkout/status/{checkoutId}` |
 | Gutschein validieren | `POST /api/customer/validate-voucher` |
