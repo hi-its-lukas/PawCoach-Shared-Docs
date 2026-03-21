@@ -406,23 +406,20 @@ if let checkout = await viewModel.createCheckout(...) {
 - `STRIPE_PUBLISHABLE_KEY` in iOS-App konfigurieren
 - Backend muss `publishable_key` in Checkout-Response liefern
 
-### Task D2: Passkey-Verwaltung UI (iOS)
+### Task D2: Passkey-Verwaltung UI (iOS) — Backend ✅
 
-**Problem:** `TwoFactorManagementView.swift:41` hat TODO: "PasskeyManager integrieren". Backend-Endpoints existieren bereits (`/api/auth/passkey/register/*`).
+**Backend komplett implementiert (2026-03-21):**
+- `GET /api/auth/passkey/list` — Liste aller Passkeys (id, name, created_at, last_used_at)
+- `DELETE /api/auth/passkey/{id}` — Passkey entfernen (409 bei letztem 2FA-Faktor)
+- `PATCH /api/auth/passkey/{id}` — Passkey umbenennen
+- `POST /api/auth/passkey/register/complete` — Auto-Name ("Passkey 1", "Passkey 2")
+- `POST /api/auth/passkey/login/complete` — setzt `last_used_at`
+- Migration: `last_used_at` Spalte auf `webauthn_credential`
 
-**Files:**
-- Modify: `PawCoach/Features/Settings/TwoFactorManagementView.swift`
-- Add: `PawCoach/Features/Settings/PasskeyManagementView.swift`
-
-**Implementierung:**
-- Liste vorhandener Passkeys anzeigen (`GET /api/auth/passkey/list` — ggf. Backend ergaenzen)
-- Neuen Passkey registrieren via `ASAuthorizationPlatformPublicKeyCredentialProvider`
-- Passkey loeschen (`DELETE /api/auth/passkey/{id}` — ggf. Backend ergaenzen)
+**iOS-Arbeit (offen):**
+- `TwoFactorManagementView.swift` — PasskeyManager integrieren
+- `PasskeyManagementView.swift` — Neue View fuer Liste/Loeschen/Umbenennen
 - Nutzt Apple AuthenticationServices Framework
-
-**Backend-Ergaenzungen noetig:**
-- `GET /api/auth/passkey/list` — Liste aller registrierten Passkeys des Users
-- `DELETE /api/auth/passkey/{id}` — Passkey entfernen
 
 ---
 
