@@ -1,6 +1,6 @@
 # PawCoach — Cross-Platform Feature-Spezifikation (Unified)
 
-**Version:** 2026-03-19-v7
+**Version:** 2026-03-24-v8
 **Plattformen:** Backend (Flask/Python) | Web-Frontend (Jinja2+JS) | iOS (Swift/SwiftUI)
 **Zweck:** Zentrales Dokument fuer ALLE Plattformen. Die kanonische Quelle ist `PawCoach-Shared-Docs`.
 
@@ -27,6 +27,7 @@
 11. [Push-Benachrichtigungen](#11-push-benachrichtigungen)
 12. [SaaS & Billing (Web-only)](#12-saas--billing-web-only)
 13. [Plattform-Status-Matrix](#13-plattform-status-matrix)
+14. [Haushalt (Household Management)](#14-haushalt-household-management)
 
 ---
 
@@ -920,5 +921,70 @@ Der oeffentliche und interne Pricing-Stand basiert auf einem gemeinsamen Katalog
 | Web-UI-Seiten | ~60 |
 | iOS-Screens | ~80 |
 | Benutzerrollen | 4 |
-| Feature-Bereiche | 12 |
+| Feature-Bereiche | 13 |
 | Real-Time Events (Socket.IO) | ~12 |
+
+---
+
+## 14. Haushalt (Household Management)
+
+### Konzept
+
+- Jeder User gehoert zu genau einem Haushalt
+- Alle Mitglieder eines Haushalts teilen: Hunde, Buchungen, Guthaben, Rechnungen
+- Haushalt hat eine gemeinsame Rechnungsadresse
+- Einladung per E-Mail-Link (7 Tage gueltig)
+- Beim Verlassen: eigene Hunde werden mitgenommen, geteilte bleiben
+
+### Datenmodell
+
+- `Household`: id, name?, billing_street, billing_postal_code, billing_city, created_at, deleted_at (soft-delete)
+- `HouseholdMember`: household_id, user_id, joined_at (unique constraint)
+- `HouseholdInvite`: household_id, invited_by_id, email, token, created_at, expires_at, accepted_at
+- `Dog.household_id` → FK auf Household
+- `CourseEnrollment.household_id`, `SchoolInvoice.household_id`, `ConversationMember.household_id`
+- `User.household` property (via HouseholdMember)
+
+### API-Endpoints (iOS)
+
+| Method | Path | Beschreibung |
+|--------|------|-------------|
+| GET | `/api/customer/household` | Haushalt + Mitglieder + Hunde + offene Einladungen |
+| POST | `/api/customer/household/invite` | Mitglied einladen (body: `{email}`) |
+| PUT | `/api/customer/household/billing` | Rechnungsadresse aendern |
+| POST | `/api/customer/household/leave` | Haushalt verlassen |
+| POST | `/api/customer/household/invite/{token}/accept` | Einladung annehmen |
+
+### Response-Schema: GET /api/customer/household
+
+```json
+{
+  "id": 1,
+  "name": null,
+  "billing_street": "Hauptstr. 12",
+  "billing_postal_code": "46045",
+  "billing_city": "Oberhausen",
+  "members": [
+    {"user_id": 1, "name": "Anna", "email": "anna@example.de", "avatar_path": null, "joined_at": "2026-03-24T10:00:00"}
+  ],
+  "dogs": [
+    {"id": 1, "name": "Bella", "breed": "Labrador", "photo_path": null}
+  ],
+  "pending_invites": [
+    {"id": 1, "email": "peter@example.de", "created_at": "...", "expires_at": "..."}
+  ],
+  "current_user_id": 1
+}
+```
+
+### Zugriffskontrolle
+
+- Alle Queries nutzen `household_id` statt `user_id` fuer: Buchungen, Rechnungen, Guthaben
+- `_household_dog_ids(user)` gibt alle Hunde-IDs des Haushalts zurueck
+- `user_id` bleibt als Audit-Feld ("wer hat gebucht")
+- Bei Auto-Registrierung wird automatisch ein Haushalt erstellt
+
+### Noch nicht implementiert (iOS)
+
+- Socket.IO Events fuer Haushalt-Aenderungen
+- Offline-Sync fuer Haushalt-Daten

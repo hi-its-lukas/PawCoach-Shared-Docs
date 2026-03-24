@@ -32,6 +32,9 @@
       "name": "forum"
     },
     {
+      "name": "Haushalt"
+    },
+    {
       "name": "messages"
     },
     {
@@ -7626,6 +7629,224 @@
         }
       }
     },
+    "/api/customer/household": {
+      "get": {
+        "tags": [
+          "Haushalt"
+        ],
+        "operationId": "api_customer.get_household",
+        "summary": "Api Customer — Get Household",
+        "description": "Gibt Haushalt-Details zurück inkl. Mitglieder, Hunde und offene Einladungen.",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Erfolgreiche Antwort",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Household"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Nicht authentifiziert"
+          },
+          "403": {
+            "description": "Keine Berechtigung"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          },
+          {
+            "sessionAuth": []
+          }
+        ]
+      }
+    },
+    "/api/customer/household/billing": {
+      "put": {
+        "tags": [
+          "Haushalt"
+        ],
+        "operationId": "api_customer.update_household_billing",
+        "summary": "Api Customer — Update Household Billing",
+        "description": "Aktualisiert die Rechnungsadresse des Haushalts.",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Erfolgreiche Antwort"
+          },
+          "401": {
+            "description": "Nicht authentifiziert"
+          },
+          "403": {
+            "description": "Keine Berechtigung"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          },
+          {
+            "sessionAuth": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "billing_street",
+                  "billing_postal_code",
+                  "billing_city"
+                ],
+                "properties": {
+                  "billing_street": {
+                    "type": "string",
+                    "example": "Musterstraße 1"
+                  },
+                  "billing_postal_code": {
+                    "type": "string",
+                    "example": "12345"
+                  },
+                  "billing_city": {
+                    "type": "string",
+                    "example": "Berlin"
+                  }
+                }
+              }
+            }
+          },
+          "required": true
+        }
+      }
+    },
+    "/api/customer/household/invite": {
+      "post": {
+        "tags": [
+          "Haushalt"
+        ],
+        "operationId": "api_customer.invite_household_member",
+        "summary": "Api Customer — Invite Household Member",
+        "description": "Lädt ein neues Mitglied per E-Mail in den Haushalt ein.",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Erfolgreiche Antwort"
+          },
+          "401": {
+            "description": "Nicht authentifiziert"
+          },
+          "403": {
+            "description": "Keine Berechtigung"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          },
+          {
+            "sessionAuth": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "email"
+                ],
+                "properties": {
+                  "email": {
+                    "type": "string",
+                    "format": "email",
+                    "example": "neues-mitglied@example.com"
+                  }
+                }
+              }
+            }
+          },
+          "required": true
+        }
+      }
+    },
+    "/api/customer/household/invite/{token}/accept": {
+      "post": {
+        "tags": [
+          "Haushalt"
+        ],
+        "operationId": "api_customer.accept_household_invite",
+        "summary": "Api Customer — Accept Household Invite",
+        "description": "Nimmt eine Haushalt-Einladung an.",
+        "parameters": [
+          {
+            "name": "token",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Erfolgreiche Antwort"
+          },
+          "401": {
+            "description": "Nicht authentifiziert"
+          },
+          "403": {
+            "description": "Keine Berechtigung"
+          },
+          "404": {
+            "description": "Einladung nicht gefunden oder abgelaufen"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          },
+          {
+            "sessionAuth": []
+          }
+        ]
+      }
+    },
+    "/api/customer/household/leave": {
+      "post": {
+        "tags": [
+          "Haushalt"
+        ],
+        "operationId": "api_customer.leave_household",
+        "summary": "Api Customer — Leave Household",
+        "description": "Verlässt den aktuellen Haushalt.",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Erfolgreiche Antwort"
+          },
+          "401": {
+            "description": "Nicht authentifiziert"
+          },
+          "403": {
+            "description": "Keine Berechtigung"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          },
+          {
+            "sessionAuth": []
+          }
+        ]
+      }
+    },
     "/api/customer/invoices": {
       "get": {
         "tags": [
@@ -12298,6 +12519,121 @@
         "in": "cookie",
         "name": "session",
         "description": "Flask Session Cookie (Web-Frontend)"
+      }
+    },
+    "schemas": {
+      "HouseholdMember": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "first_name": {
+            "type": "string"
+          },
+          "last_name": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string",
+            "format": "email"
+          },
+          "role": {
+            "type": "string",
+            "enum": ["owner", "member"],
+            "description": "Rolle im Haushalt (owner = Ersteller, member = eingeladenes Mitglied)"
+          },
+          "joined_at": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "HouseholdDog": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "name": {
+            "type": "string"
+          },
+          "breed": {
+            "type": "string"
+          },
+          "date_of_birth": {
+            "type": "string",
+            "format": "date",
+            "nullable": true
+          },
+          "owner_id": {
+            "type": "integer",
+            "description": "ID des Mitglieds, dem der Hund gehört"
+          }
+        }
+      },
+      "HouseholdInvite": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "email": {
+            "type": "string",
+            "format": "email"
+          },
+          "invited_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "expires_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "status": {
+            "type": "string",
+            "enum": ["pending", "accepted", "expired"],
+            "description": "Status der Einladung"
+          }
+        }
+      },
+      "Household": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "billing_street": {
+            "type": "string",
+            "nullable": true
+          },
+          "billing_postal_code": {
+            "type": "string",
+            "nullable": true
+          },
+          "billing_city": {
+            "type": "string",
+            "nullable": true
+          },
+          "members": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/HouseholdMember"
+            }
+          },
+          "dogs": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/HouseholdDog"
+            }
+          },
+          "pending_invites": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/HouseholdInvite"
+            }
+          }
+        }
       }
     }
   }

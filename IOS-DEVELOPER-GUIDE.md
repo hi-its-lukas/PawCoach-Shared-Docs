@@ -235,6 +235,124 @@ Der Modernisierungsplan bleibt nur fuer noch offene Arbeit relevant:
 
 ---
 
+## Household (Haushaltsverwaltung)
+
+### Uebersicht
+Jeder Kunde gehoert zu einem Haushalt. Alle Haushaltsmitglieder teilen Hunde, Buchungen, Guthaben und Rechnungen. Bei der Registrierung wird automatisch ein Haushalt erstellt.
+
+### API-Endpoints
+
+```
+GET    /api/customer/household                    → Haushalt-Details
+POST   /api/customer/household/invite             → Mitglied einladen
+PUT    /api/customer/household/billing             → Rechnungsadresse aendern
+POST   /api/customer/household/leave              → Haushalt verlassen
+POST   /api/customer/household/invite/{token}/accept → Einladung annehmen
+```
+
+### SwiftUI Models
+
+```swift
+struct Household: Codable, Identifiable {
+    let id: Int
+    let name: String?
+    let billingStreet: String?
+    let billingPostalCode: String?
+    let billingCity: String?
+    let members: [HouseholdMember]
+    let dogs: [HouseholdDog]
+    let pendingInvites: [HouseholdInvite]
+    let currentUserId: Int
+
+    enum CodingKeys: String, CodingKey {
+        case id, name, members, dogs
+        case billingStreet = "billing_street"
+        case billingPostalCode = "billing_postal_code"
+        case billingCity = "billing_city"
+        case pendingInvites = "pending_invites"
+        case currentUserId = "current_user_id"
+    }
+}
+
+struct HouseholdMember: Codable, Identifiable {
+    var id: Int { userId }
+    let userId: Int
+    let name: String
+    let email: String
+    let avatarPath: String?
+    let joinedAt: String?
+
+    enum CodingKeys: String, CodingKey {
+        case userId = "user_id"
+        case name, email
+        case avatarPath = "avatar_path"
+        case joinedAt = "joined_at"
+    }
+}
+
+struct HouseholdDog: Codable, Identifiable {
+    let id: Int
+    let name: String
+    let breed: String?
+    let photoPath: String?
+
+    enum CodingKeys: String, CodingKey {
+        case id, name, breed
+        case photoPath = "photo_path"
+    }
+}
+
+struct HouseholdInvite: Codable, Identifiable {
+    let id: Int
+    let email: String
+    let createdAt: String?
+    let expiresAt: String?
+
+    enum CodingKeys: String, CodingKey {
+        case id, email
+        case createdAt = "created_at"
+        case expiresAt = "expires_at"
+    }
+}
+```
+
+### Networking
+
+```swift
+// HouseholdService.swift
+func fetchHousehold() async throws -> Household {
+    try await api.get("/api/customer/household")
+}
+
+func inviteMember(email: String) async throws {
+    try await api.post("/api/customer/household/invite", body: ["email": email])
+}
+
+func updateBilling(street: String?, postalCode: String?, city: String?) async throws {
+    try await api.put("/api/customer/household/billing", body: [
+        "billing_street": street,
+        "billing_postal_code": postalCode,
+        "billing_city": city
+    ])
+}
+
+func leaveHousehold() async throws {
+    try await api.post("/api/customer/household/leave")
+}
+
+func acceptInvite(token: String) async throws -> Household {
+    try await api.post("/api/customer/household/invite/\(token)/accept")
+}
+```
+
+### Wichtige Hinweise
+- **Zugriffskontrolle**: Alle Buchungs-/Rechnungs-/Guthaben-Queries sind `household_id`-basiert → alle Mitglieder sehen die gleichen Daten
+- **"Gebucht von"**: `user_id` auf Bookings zeigt wer gebucht hat. Anzeigen wenn `booking.user_id != currentUserId`
+- **Auto-Haushalt**: Bei Registrierung wird automatisch ein Solo-Haushalt erstellt
+- **Einladung**: Token ist 7 Tage gueltig, Link zeigt auf Web-Seite `/haushalt/einladung/{token}`
+
+---
+
 ## Checkliste vor dem Merge
 
 - Shared-Dokumente auf aktuellem Stand
