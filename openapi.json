@@ -2,8 +2,8 @@
   "openapi": "3.0.3",
   "info": {
     "title": "PawCoach API",
-    "version": "2026-03-18",
-    "description": "Auto-generierte API-Spezifikation aus Flask-Routes. Dient als Contract zwischen Backend, Web-Frontend und iOS-App."
+    "version": "2026-03-29",
+    "description": "Auto-generierte API-Spezifikation aus Flask-Routes."
   },
   "servers": [
     {
@@ -32,10 +32,10 @@
       "name": "forum"
     },
     {
-      "name": "Haushalt"
+      "name": "messages"
     },
     {
-      "name": "messages"
+      "name": "session-location"
     },
     {
       "name": "platform"
@@ -47,10 +47,7 @@
       "name": "push"
     },
     {
-      "name": "schools"
-    },
-    {
-      "name": "session-location"
+      "name": "other"
     },
     {
       "name": "trainer"
@@ -121,17 +118,7 @@
           {
             "sessionAuth": []
           }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object"
-              }
-            }
-          },
-          "required": false
-        }
+        ]
       }
     },
     "/api/admin/accounting/retry-all": {
@@ -160,17 +147,63 @@
           {
             "sessionAuth": []
           }
+        ]
+      }
+    },
+    "/api/admin/accounting/settings": {
+      "get": {
+        "tags": [
+          "admin"
         ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object"
-              }
-            }
+        "operationId": "api_admin.get_accounting_settings",
+        "summary": "Api Admin — Get Accounting Settings",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Erfolgreiche Antwort"
           },
-          "required": false
-        }
+          "401": {
+            "description": "Nicht authentifiziert"
+          },
+          "403": {
+            "description": "Keine Berechtigung"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          },
+          {
+            "sessionAuth": []
+          }
+        ]
+      },
+      "put": {
+        "tags": [
+          "admin"
+        ],
+        "operationId": "api_admin.update_accounting_settings",
+        "summary": "Api Admin — Update Accounting Settings",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Erfolgreiche Antwort"
+          },
+          "401": {
+            "description": "Nicht authentifiziert"
+          },
+          "403": {
+            "description": "Keine Berechtigung"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          },
+          {
+            "sessionAuth": []
+          }
+        ]
       }
     },
     "/api/admin/accounting/sync-now": {
@@ -199,17 +232,7 @@
           {
             "sessionAuth": []
           }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object"
-              }
-            }
-          },
-          "required": false
-        }
+        ]
       }
     },
     "/api/admin/accounting/test-connection": {
@@ -238,17 +261,7 @@
           {
             "sessionAuth": []
           }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object"
-              }
-            }
-          },
-          "required": false
-        }
+        ]
       }
     },
     "/api/admin/addons": {
@@ -315,17 +328,7 @@
           {
             "sessionAuth": []
           }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object"
-              }
-            }
-          },
-          "required": false
-        }
+        ]
       }
     },
     "/api/admin/addons/{slug}/checkout": {
@@ -363,17 +366,7 @@
           {
             "sessionAuth": []
           }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object"
-              }
-            }
-          },
-          "required": false
-        }
+        ]
       }
     },
     "/api/admin/addons/{slug}/deactivate": {
@@ -411,17 +404,7 @@
           {
             "sessionAuth": []
           }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object"
-              }
-            }
-          },
-          "required": false
-        }
+        ]
       }
     },
     "/api/admin/availability": {
@@ -477,17 +460,7 @@
           {
             "sessionAuth": []
           }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object"
-              }
-            }
-          },
-          "required": false
-        }
+        ]
       }
     },
     "/api/admin/availability/{slot_id}": {
@@ -525,17 +498,7 @@
           {
             "sessionAuth": []
           }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object"
-              }
-            }
-          },
-          "required": false
-        }
+        ]
       },
       "delete": {
         "tags": [
@@ -580,7 +543,6 @@
           "admin"
         ],
         "operationId": "api_admin.list_booking_requests",
-        "summary": "Api Admin — List Booking Requests",
         "parameters": [],
         "responses": {
           "200": {
@@ -609,7 +571,6 @@
           "admin"
         ],
         "operationId": "api_admin.update_booking_request",
-        "summary": "Api Admin — Update Booking Request",
         "parameters": [
           {
             "name": "req_id",
@@ -638,17 +599,7 @@
           {
             "sessionAuth": []
           }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object"
-              }
-            }
-          },
-          "required": false
-        }
+        ]
       }
     },
     "/api/admin/booking-requests/batch-seen": {
@@ -657,7 +608,6 @@
           "admin"
         ],
         "operationId": "api_admin.batch_booking_requests_seen",
-        "summary": "Api Admin — Batch Booking Requests Seen",
         "parameters": [],
         "responses": {
           "200": {
@@ -677,17 +627,7 @@
           {
             "sessionAuth": []
           }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object"
-              }
-            }
-          },
-          "required": false
-        }
+        ]
       }
     },
     "/api/admin/bookings/direct": {
@@ -716,17 +656,7 @@
           {
             "sessionAuth": []
           }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object"
-              }
-            }
-          },
-          "required": false
-        }
+        ]
       }
     },
     "/api/admin/cancellation-requests": {
@@ -735,7 +665,6 @@
           "admin"
         ],
         "operationId": "api_admin.list_cancellation_requests",
-        "summary": "Api Admin — List Cancellation Requests",
         "parameters": [],
         "responses": {
           "200": {
@@ -764,7 +693,6 @@
           "admin"
         ],
         "operationId": "api_admin.approve_cancellation_request",
-        "summary": "Api Admin — Approve Cancellation Request",
         "parameters": [
           {
             "name": "req_id",
@@ -793,17 +721,7 @@
           {
             "sessionAuth": []
           }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object"
-              }
-            }
-          },
-          "required": false
-        }
+        ]
       }
     },
     "/api/admin/cancellation-requests/{req_id}/reject": {
@@ -812,7 +730,6 @@
           "admin"
         ],
         "operationId": "api_admin.reject_cancellation_request",
-        "summary": "Api Admin — Reject Cancellation Request",
         "parameters": [
           {
             "name": "req_id",
@@ -841,17 +758,7 @@
           {
             "sessionAuth": []
           }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object"
-              }
-            }
-          },
-          "required": false
-        }
+        ]
       }
     },
     "/api/admin/course-categories": {
@@ -907,17 +814,7 @@
           {
             "sessionAuth": []
           }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object"
-              }
-            }
-          },
-          "required": false
-        }
+        ]
       }
     },
     "/api/admin/course-categories/{cat_id}": {
@@ -955,17 +852,7 @@
           {
             "sessionAuth": []
           }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object"
-              }
-            }
-          },
-          "required": false
-        }
+        ]
       },
       "delete": {
         "tags": [
@@ -1057,17 +944,7 @@
           {
             "sessionAuth": []
           }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object"
-              }
-            }
-          },
-          "required": false
-        }
+        ]
       }
     },
     "/api/admin/course-formats/{fmt_id}": {
@@ -1105,17 +982,7 @@
           {
             "sessionAuth": []
           }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object"
-              }
-            }
-          },
-          "required": false
-        }
+        ]
       },
       "delete": {
         "tags": [
@@ -1207,17 +1074,7 @@
           {
             "sessionAuth": []
           }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object"
-              }
-            }
-          },
-          "required": false
-        }
+        ]
       }
     },
     "/api/admin/courses/{course_id}": {
@@ -1291,17 +1148,7 @@
           {
             "sessionAuth": []
           }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object"
-              }
-            }
-          },
-          "required": false
-        }
+        ]
       },
       "delete": {
         "tags": [
@@ -1375,17 +1222,7 @@
           {
             "sessionAuth": []
           }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object"
-              }
-            }
-          },
-          "required": false
-        }
+        ]
       }
     },
     "/api/admin/credits": {
@@ -1441,17 +1278,7 @@
           {
             "sessionAuth": []
           }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object"
-              }
-            }
-          },
-          "required": false
-        }
+        ]
       }
     },
     "/api/admin/credits/{credit_id}": {
@@ -1525,17 +1352,7 @@
           {
             "sessionAuth": []
           }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object"
-              }
-            }
-          },
-          "required": false
-        }
+        ]
       }
     },
     "/api/admin/credits/{credit_id}/extend": {
@@ -1573,17 +1390,7 @@
           {
             "sessionAuth": []
           }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object"
-              }
-            }
-          },
-          "required": false
-        }
+        ]
       }
     },
     "/api/admin/customers/{customer_id}/dogs": {
@@ -1632,6 +1439,174 @@
         "operationId": "api_admin.get_dashboard",
         "summary": "Api Admin — Get Dashboard",
         "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Erfolgreiche Antwort"
+          },
+          "401": {
+            "description": "Nicht authentifiziert"
+          },
+          "403": {
+            "description": "Keine Berechtigung"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          },
+          {
+            "sessionAuth": []
+          }
+        ]
+      }
+    },
+    "/api/admin/discount-codes": {
+      "get": {
+        "tags": [
+          "admin"
+        ],
+        "operationId": "api_admin.list_discount_codes",
+        "summary": "Api Admin — List Discount Codes",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Erfolgreiche Antwort"
+          },
+          "401": {
+            "description": "Nicht authentifiziert"
+          },
+          "403": {
+            "description": "Keine Berechtigung"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          },
+          {
+            "sessionAuth": []
+          }
+        ]
+      },
+      "post": {
+        "tags": [
+          "admin"
+        ],
+        "operationId": "api_admin.create_discount_code",
+        "summary": "Api Admin — Create Discount Code",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Erfolgreiche Antwort"
+          },
+          "401": {
+            "description": "Nicht authentifiziert"
+          },
+          "403": {
+            "description": "Keine Berechtigung"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          },
+          {
+            "sessionAuth": []
+          }
+        ]
+      }
+    },
+    "/api/admin/discount-codes/{dc_id}": {
+      "get": {
+        "tags": [
+          "admin"
+        ],
+        "operationId": "api_admin.get_discount_code",
+        "summary": "Api Admin — Get Discount Code",
+        "parameters": [
+          {
+            "name": "dc_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Erfolgreiche Antwort"
+          },
+          "401": {
+            "description": "Nicht authentifiziert"
+          },
+          "403": {
+            "description": "Keine Berechtigung"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          },
+          {
+            "sessionAuth": []
+          }
+        ]
+      },
+      "put": {
+        "tags": [
+          "admin"
+        ],
+        "operationId": "api_admin.update_discount_code",
+        "summary": "Api Admin — Update Discount Code",
+        "parameters": [
+          {
+            "name": "dc_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Erfolgreiche Antwort"
+          },
+          "401": {
+            "description": "Nicht authentifiziert"
+          },
+          "403": {
+            "description": "Keine Berechtigung"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          },
+          {
+            "sessionAuth": []
+          }
+        ]
+      }
+    },
+    "/api/admin/discount-codes/{dc_id}/toggle": {
+      "post": {
+        "tags": [
+          "admin"
+        ],
+        "operationId": "api_admin.toggle_discount_code",
+        "summary": "Api Admin — Toggle Discount Code",
+        "parameters": [
+          {
+            "name": "dc_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": "Erfolgreiche Antwort"
@@ -1706,17 +1681,7 @@
           {
             "sessionAuth": []
           }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object"
-              }
-            }
-          },
-          "required": false
-        }
+        ]
       }
     },
     "/api/admin/dogs/{dog_id}": {
@@ -1790,17 +1755,7 @@
           {
             "sessionAuth": []
           }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object"
-              }
-            }
-          },
-          "required": false
-        }
+        ]
       },
       "delete": {
         "tags": [
@@ -1874,17 +1829,7 @@
           {
             "sessionAuth": []
           }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object"
-              }
-            }
-          },
-          "required": false
-        }
+        ]
       }
     },
     "/api/admin/einzelstunde-requests": {
@@ -1893,7 +1838,6 @@
           "admin"
         ],
         "operationId": "api_admin.list_einzelstunde_requests",
-        "summary": "Api Admin — List Einzelstunde Requests",
         "parameters": [],
         "responses": {
           "200": {
@@ -1922,7 +1866,6 @@
           "admin"
         ],
         "operationId": "api_admin.confirm_einzelstunde_request",
-        "summary": "Api Admin — Confirm Einzelstunde Request",
         "parameters": [
           {
             "name": "req_id",
@@ -1951,17 +1894,7 @@
           {
             "sessionAuth": []
           }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object"
-              }
-            }
-          },
-          "required": false
-        }
+        ]
       }
     },
     "/api/admin/einzelstunde-requests/{req_id}/reject": {
@@ -1970,7 +1903,6 @@
           "admin"
         ],
         "operationId": "api_admin.reject_einzelstunde_request",
-        "summary": "Api Admin — Reject Einzelstunde Request",
         "parameters": [
           {
             "name": "req_id",
@@ -1999,17 +1931,7 @@
           {
             "sessionAuth": []
           }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object"
-              }
-            }
-          },
-          "required": false
-        }
+        ]
       }
     },
     "/api/admin/email-templates": {
@@ -2112,17 +2034,7 @@
           {
             "sessionAuth": []
           }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object"
-              }
-            }
-          },
-          "required": false
-        }
+        ]
       }
     },
     "/api/admin/email-templates/{event_type}/reset": {
@@ -2160,17 +2072,7 @@
           {
             "sessionAuth": []
           }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object"
-              }
-            }
-          },
-          "required": false
-        }
+        ]
       }
     },
     "/api/admin/email-templates/{template_id}": {
@@ -2244,17 +2146,7 @@
           {
             "sessionAuth": []
           }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object"
-              }
-            }
-          },
-          "required": false
-        }
+        ]
       },
       "delete": {
         "tags": [
@@ -2346,17 +2238,7 @@
           {
             "sessionAuth": []
           }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object"
-              }
-            }
-          },
-          "required": false
-        }
+        ]
       }
     },
     "/api/admin/invoices/{invoice_id}": {
@@ -2488,17 +2370,7 @@
           {
             "sessionAuth": []
           }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object"
-              }
-            }
-          },
-          "required": false
-        }
+        ]
       }
     },
     "/api/admin/locations/{location_id}": {
@@ -2536,17 +2408,7 @@
           {
             "sessionAuth": []
           }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object"
-              }
-            }
-          },
-          "required": false
-        }
+        ]
       },
       "delete": {
         "tags": [
@@ -2638,17 +2500,7 @@
           {
             "sessionAuth": []
           }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object"
-              }
-            }
-          },
-          "required": false
-        }
+        ]
       }
     },
     "/api/admin/open-group-approvals/{approval_id}/approve": {
@@ -2686,17 +2538,7 @@
           {
             "sessionAuth": []
           }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object"
-              }
-            }
-          },
-          "required": false
-        }
+        ]
       }
     },
     "/api/admin/open-group-approvals/{approval_id}/reject": {
@@ -2734,17 +2576,7 @@
           {
             "sessionAuth": []
           }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object"
-              }
-            }
-          },
-          "required": false
-        }
+        ]
       }
     },
     "/api/admin/open-group-approvals/{approval_id}/revoke": {
@@ -2782,17 +2614,7 @@
           {
             "sessionAuth": []
           }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object"
-              }
-            }
-          },
-          "required": false
-        }
+        ]
       }
     },
     "/api/admin/payment-methods": {
@@ -2848,17 +2670,7 @@
           {
             "sessionAuth": []
           }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object"
-              }
-            }
-          },
-          "required": false
-        }
+        ]
       }
     },
     "/api/admin/payment-methods/{pm_id}": {
@@ -2934,17 +2746,36 @@
           {
             "sessionAuth": []
           }
+        ]
+      }
+    },
+    "/api/admin/payments": {
+      "get": {
+        "tags": [
+          "admin"
         ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object"
-              }
-            }
+        "operationId": "api_admin.list_payments",
+        "summary": "Api Admin — List Payments",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Erfolgreiche Antwort"
           },
-          "required": false
-        }
+          "401": {
+            "description": "Nicht authentifiziert"
+          },
+          "403": {
+            "description": "Keine Berechtigung"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          },
+          {
+            "sessionAuth": []
+          }
+        ]
       }
     },
     "/api/admin/pending-registrations": {
@@ -3011,17 +2842,7 @@
           {
             "sessionAuth": []
           }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object"
-              }
-            }
-          },
-          "required": false
-        }
+        ]
       }
     },
     "/api/admin/pending-registrations/{user_id}/reject": {
@@ -3059,17 +2880,65 @@
           {
             "sessionAuth": []
           }
+        ]
+      }
+    },
+    "/api/admin/referral": {
+      "get": {
+        "tags": [
+          "admin"
         ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object"
-              }
-            }
+        "operationId": "api_admin.get_referral",
+        "summary": "Api Admin — Get Referral",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Erfolgreiche Antwort"
           },
-          "required": false
-        }
+          "401": {
+            "description": "Nicht authentifiziert"
+          },
+          "403": {
+            "description": "Keine Berechtigung"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          },
+          {
+            "sessionAuth": []
+          }
+        ]
+      }
+    },
+    "/api/admin/referral/generate": {
+      "post": {
+        "tags": [
+          "admin"
+        ],
+        "operationId": "api_admin.generate_referral",
+        "summary": "Api Admin — Generate Referral",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Erfolgreiche Antwort"
+          },
+          "401": {
+            "description": "Nicht authentifiziert"
+          },
+          "403": {
+            "description": "Keine Berechtigung"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          },
+          {
+            "sessionAuth": []
+          }
+        ]
       }
     },
     "/api/admin/reviews": {
@@ -3136,17 +3005,7 @@
           {
             "sessionAuth": []
           }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object"
-              }
-            }
-          },
-          "required": false
-        }
+        ]
       }
     },
     "/api/admin/reviews/{review_id}/reject": {
@@ -3184,17 +3043,7 @@
           {
             "sessionAuth": []
           }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object"
-              }
-            }
-          },
-          "required": false
-        }
+        ]
       }
     },
     "/api/admin/sessions": {
@@ -3250,17 +3099,7 @@
           {
             "sessionAuth": []
           }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object"
-              }
-            }
-          },
-          "required": false
-        }
+        ]
       }
     },
     "/api/admin/sessions/{session_id}": {
@@ -3334,17 +3173,7 @@
           {
             "sessionAuth": []
           }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object"
-              }
-            }
-          },
-          "required": false
-        }
+        ]
       },
       "delete": {
         "tags": [
@@ -3418,17 +3247,7 @@
           {
             "sessionAuth": []
           }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object"
-              }
-            }
-          },
-          "required": false
-        }
+        ]
       }
     },
     "/api/admin/sessions/{session_id}/makeup": {
@@ -3466,17 +3285,7 @@
           {
             "sessionAuth": []
           }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object"
-              }
-            }
-          },
-          "required": false
-        }
+        ]
       }
     },
     "/api/admin/settings": {
@@ -3532,17 +3341,7 @@
           {
             "sessionAuth": []
           }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object"
-              }
-            }
-          },
-          "required": false
-        }
+        ]
       }
     },
     "/api/admin/settings/hero-image": {
@@ -3571,17 +3370,7 @@
           {
             "sessionAuth": []
           }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object"
-              }
-            }
-          },
-          "required": false
-        }
+        ]
       },
       "delete": {
         "tags": [
@@ -3666,17 +3455,7 @@
           {
             "sessionAuth": []
           }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object"
-              }
-            }
-          },
-          "required": false
-        }
+        ]
       }
     },
     "/api/admin/settings/sender-email": {
@@ -3712,7 +3491,6 @@
           "admin"
         ],
         "operationId": "api_admin.request_sender_email_verification",
-        "summary": "Api Admin — Request Sender Email Verification",
         "parameters": [],
         "responses": {
           "200": {
@@ -3732,17 +3510,7 @@
           {
             "sessionAuth": []
           }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object"
-              }
-            }
-          },
-          "required": false
-        }
+        ]
       },
       "delete": {
         "tags": [
@@ -3798,17 +3566,7 @@
           {
             "sessionAuth": []
           }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object"
-              }
-            }
-          },
-          "required": false
-        }
+        ]
       }
     },
     "/api/admin/setup/skip": {
@@ -3837,17 +3595,7 @@
           {
             "sessionAuth": []
           }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object"
-              }
-            }
-          },
-          "required": false
-        }
+        ]
       }
     },
     "/api/admin/setup/status": {
@@ -3934,17 +3682,7 @@
           {
             "sessionAuth": []
           }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object"
-              }
-            }
-          },
-          "required": false
-        }
+        ]
       }
     },
     "/api/admin/stripe-connect/refresh-status": {
@@ -3973,17 +3711,7 @@
           {
             "sessionAuth": []
           }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object"
-              }
-            }
-          },
-          "required": false
-        }
+        ]
       }
     },
     "/api/admin/stripe-connect/status": {
@@ -4041,17 +3769,7 @@
           {
             "sessionAuth": []
           }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object"
-              }
-            }
-          },
-          "required": false
-        }
+        ]
       }
     },
     "/api/admin/subscription": {
@@ -4109,17 +3827,7 @@
           {
             "sessionAuth": []
           }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object"
-              }
-            }
-          },
-          "required": false
-        }
+        ]
       }
     },
     "/api/admin/subscription/cancel/undo": {
@@ -4148,17 +3856,7 @@
           {
             "sessionAuth": []
           }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object"
-              }
-            }
-          },
-          "required": false
-        }
+        ]
       }
     },
     "/api/admin/subscription/plan": {
@@ -4187,17 +3885,7 @@
           {
             "sessionAuth": []
           }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object"
-              }
-            }
-          },
-          "required": false
-        }
+        ]
       }
     },
     "/api/admin/support-access": {
@@ -4264,17 +3952,7 @@
           {
             "sessionAuth": []
           }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object"
-              }
-            }
-          },
-          "required": false
-        }
+        ]
       }
     },
     "/api/admin/support-access/{req_id}/reject": {
@@ -4312,17 +3990,7 @@
           {
             "sessionAuth": []
           }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object"
-              }
-            }
-          },
-          "required": false
-        }
+        ]
       }
     },
     "/api/admin/support-access/{req_id}/revoke": {
@@ -4360,17 +4028,7 @@
           {
             "sessionAuth": []
           }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object"
-              }
-            }
-          },
-          "required": false
-        }
+        ]
       }
     },
     "/api/admin/survey-dashboard": {
@@ -4455,17 +4113,7 @@
           {
             "sessionAuth": []
           }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object"
-              }
-            }
-          },
-          "required": false
-        }
+        ]
       }
     },
     "/api/admin/survey-templates/{template_id}": {
@@ -4539,17 +4187,7 @@
           {
             "sessionAuth": []
           }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object"
-              }
-            }
-          },
-          "required": false
-        }
+        ]
       },
       "delete": {
         "tags": [
@@ -4708,17 +4346,7 @@
           {
             "sessionAuth": []
           }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object"
-              }
-            }
-          },
-          "required": false
-        }
+        ]
       }
     },
     "/api/admin/users/{user_id}": {
@@ -4792,17 +4420,7 @@
           {
             "sessionAuth": []
           }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object"
-              }
-            }
-          },
-          "required": false
-        }
+        ]
       },
       "delete": {
         "tags": [
@@ -4876,17 +4494,7 @@
           {
             "sessionAuth": []
           }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object"
-              }
-            }
-          },
-          "required": false
-        }
+        ]
       }
     },
     "/api/admin/users/{user_id}/link-dog": {
@@ -4924,17 +4532,7 @@
           {
             "sessionAuth": []
           }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object"
-              }
-            }
-          },
-          "required": false
-        }
+        ]
       }
     },
     "/api/admin/users/{user_id}/resend-invite": {
@@ -4972,17 +4570,7 @@
           {
             "sessionAuth": []
           }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object"
-              }
-            }
-          },
-          "required": false
-        }
+        ]
       }
     },
     "/api/admin/users/{user_id}/reset-2fa": {
@@ -5020,17 +4608,7 @@
           {
             "sessionAuth": []
           }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object"
-              }
-            }
-          },
-          "required": false
-        }
+        ]
       }
     },
     "/api/admin/users/{user_id}/send-password-reset": {
@@ -5068,17 +4646,7 @@
           {
             "sessionAuth": []
           }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object"
-              }
-            }
-          },
-          "required": false
-        }
+        ]
       }
     },
     "/api/admin/users/{user_id}/unlink-dog/{dog_id}": {
@@ -5124,17 +4692,36 @@
           {
             "sessionAuth": []
           }
+        ]
+      }
+    },
+    "/api/admin/voucher-statistics": {
+      "get": {
+        "tags": [
+          "admin"
         ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object"
-              }
-            }
+        "operationId": "api_admin.voucher_statistics",
+        "summary": "Api Admin — Voucher Statistics",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Erfolgreiche Antwort"
           },
-          "required": false
-        }
+          "401": {
+            "description": "Nicht authentifiziert"
+          },
+          "403": {
+            "description": "Keine Berechtigung"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          },
+          {
+            "sessionAuth": []
+          }
+        ]
       }
     },
     "/api/admin/vouchers": {
@@ -5190,17 +4777,7 @@
           {
             "sessionAuth": []
           }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object"
-              }
-            }
-          },
-          "required": false
-        }
+        ]
       }
     },
     "/api/admin/vouchers/{voucher_id}": {
@@ -5274,17 +4851,7 @@
           {
             "sessionAuth": []
           }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object"
-              }
-            }
-          },
-          "required": false
-        }
+        ]
       },
       "delete": {
         "tags": [
@@ -5396,17 +4963,7 @@
           {
             "sessionAuth": []
           }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object"
-              }
-            }
-          },
-          "required": false
-        }
+        ]
       }
     },
     "/api/auth/2fa/backup-codes": {
@@ -5435,17 +4992,7 @@
           {
             "sessionAuth": []
           }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object"
-              }
-            }
-          },
-          "required": false
-        }
+        ]
       }
     },
     "/api/auth/2fa/disable-all": {
@@ -5474,17 +5021,7 @@
           {
             "sessionAuth": []
           }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object"
-              }
-            }
-          },
-          "required": false
-        }
+        ]
       }
     },
     "/api/auth/2fa/status": {
@@ -5542,17 +5079,7 @@
           {
             "sessionAuth": []
           }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object"
-              }
-            }
-          },
-          "required": false
-        }
+        ]
       }
     },
     "/api/auth/2fa/totp/setup": {
@@ -5581,17 +5108,7 @@
           {
             "sessionAuth": []
           }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object"
-              }
-            }
-          },
-          "required": false
-        }
+        ]
       }
     },
     "/api/auth/2fa/totp/verify-setup": {
@@ -5620,17 +5137,7 @@
           {
             "sessionAuth": []
           }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object"
-              }
-            }
-          },
-          "required": false
-        }
+        ]
       }
     },
     "/api/auth/2fa/verify": {
@@ -5659,17 +5166,7 @@
           {
             "sessionAuth": []
           }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object"
-              }
-            }
-          },
-          "required": false
-        }
+        ]
       }
     },
     "/api/auth/avatar": {
@@ -5698,17 +5195,7 @@
           {
             "sessionAuth": []
           }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object"
-              }
-            }
-          },
-          "required": false
-        }
+        ]
       },
       "delete": {
         "tags": [
@@ -5794,7 +5281,15 @@
           "403": {
             "description": "Keine Berechtigung"
           }
-        }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          },
+          {
+            "sessionAuth": []
+          }
+        ]
       }
     },
     "/api/auth/forgot-password": {
@@ -5816,16 +5311,14 @@
             "description": "Keine Berechtigung"
           }
         },
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object"
-              }
-            }
+        "security": [
+          {
+            "bearerAuth": []
           },
-          "required": false
-        }
+          {
+            "sessionAuth": []
+          }
+        ]
       }
     },
     "/api/auth/login": {
@@ -5847,16 +5340,14 @@
             "description": "Keine Berechtigung"
           }
         },
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object"
-              }
-            }
+        "security": [
+          {
+            "bearerAuth": []
           },
-          "required": false
-        }
+          {
+            "sessionAuth": []
+          }
+        ]
       }
     },
     "/api/auth/logout": {
@@ -5885,17 +5376,7 @@
           {
             "sessionAuth": []
           }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object"
-              }
-            }
-          },
-          "required": false
-        }
+        ]
       }
     },
     "/api/auth/me": {
@@ -5980,17 +5461,110 @@
           {
             "sessionAuth": []
           }
+        ]
+      }
+    },
+    "/api/auth/passkey/{passkey_id}": {
+      "delete": {
+        "tags": [
+          "auth"
         ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object"
-              }
+        "operationId": "api_passkey.passkey_delete",
+        "summary": "Api Passkey — Passkey Delete",
+        "parameters": [
+          {
+            "name": "passkey_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
             }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Erfolgreiche Antwort"
           },
-          "required": false
-        }
+          "401": {
+            "description": "Nicht authentifiziert"
+          },
+          "403": {
+            "description": "Keine Berechtigung"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          },
+          {
+            "sessionAuth": []
+          }
+        ]
+      },
+      "patch": {
+        "tags": [
+          "auth"
+        ],
+        "operationId": "api_passkey.passkey_rename",
+        "summary": "Api Passkey — Passkey Rename",
+        "parameters": [
+          {
+            "name": "passkey_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Erfolgreiche Antwort"
+          },
+          "401": {
+            "description": "Nicht authentifiziert"
+          },
+          "403": {
+            "description": "Keine Berechtigung"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          },
+          {
+            "sessionAuth": []
+          }
+        ]
+      }
+    },
+    "/api/auth/passkey/list": {
+      "get": {
+        "tags": [
+          "auth"
+        ],
+        "operationId": "api_passkey.passkey_list",
+        "summary": "Api Passkey — Passkey List",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Erfolgreiche Antwort"
+          },
+          "401": {
+            "description": "Nicht authentifiziert"
+          },
+          "403": {
+            "description": "Keine Berechtigung"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          },
+          {
+            "sessionAuth": []
+          }
+        ]
       }
     },
     "/api/auth/passkey/login/begin": {
@@ -6012,16 +5586,14 @@
             "description": "Keine Berechtigung"
           }
         },
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object"
-              }
-            }
+        "security": [
+          {
+            "bearerAuth": []
           },
-          "required": false
-        }
+          {
+            "sessionAuth": []
+          }
+        ]
       }
     },
     "/api/auth/passkey/login/complete": {
@@ -6043,16 +5615,14 @@
             "description": "Keine Berechtigung"
           }
         },
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object"
-              }
-            }
+        "security": [
+          {
+            "bearerAuth": []
           },
-          "required": false
-        }
+          {
+            "sessionAuth": []
+          }
+        ]
       }
     },
     "/api/auth/passkey/register/begin": {
@@ -6081,17 +5651,7 @@
           {
             "sessionAuth": []
           }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object"
-              }
-            }
-          },
-          "required": false
-        }
+        ]
       }
     },
     "/api/auth/passkey/register/complete": {
@@ -6120,17 +5680,7 @@
           {
             "sessionAuth": []
           }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object"
-              }
-            }
-          },
-          "required": false
-        }
+        ]
       }
     },
     "/api/auth/profile/visibility": {
@@ -6186,17 +5736,7 @@
           {
             "sessionAuth": []
           }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object"
-              }
-            }
-          },
-          "required": false
-        }
+        ]
       }
     },
     "/api/auth/refresh": {
@@ -6225,17 +5765,7 @@
           {
             "sessionAuth": []
           }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object"
-              }
-            }
-          },
-          "required": false
-        }
+        ]
       }
     },
     "/api/auth/register": {
@@ -6257,16 +5787,14 @@
             "description": "Keine Berechtigung"
           }
         },
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object"
-              }
-            }
+        "security": [
+          {
+            "bearerAuth": []
           },
-          "required": false
-        }
+          {
+            "sessionAuth": []
+          }
+        ]
       }
     },
     "/api/auth/register-customer": {
@@ -6288,16 +5816,14 @@
             "description": "Keine Berechtigung"
           }
         },
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object"
-              }
-            }
+        "security": [
+          {
+            "bearerAuth": []
           },
-          "required": false
-        }
+          {
+            "sessionAuth": []
+          }
+        ]
       }
     },
     "/api/auth/resend-confirmation": {
@@ -6326,17 +5852,7 @@
           {
             "sessionAuth": []
           }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object"
-              }
-            }
-          },
-          "required": false
-        }
+        ]
       }
     },
     "/api/auth/reset-password": {
@@ -6358,16 +5874,14 @@
             "description": "Keine Berechtigung"
           }
         },
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object"
-              }
-            }
+        "security": [
+          {
+            "bearerAuth": []
           },
-          "required": false
-        }
+          {
+            "sessionAuth": []
+          }
+        ]
       }
     },
     "/api/auth/set-password": {
@@ -6396,17 +5910,7 @@
           {
             "sessionAuth": []
           }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object"
-              }
-            }
-          },
-          "required": false
-        }
+        ]
       }
     },
     "/api/auth/switch-context": {
@@ -6435,17 +5939,7 @@
           {
             "sessionAuth": []
           }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object"
-              }
-            }
-          },
-          "required": false
-        }
+        ]
       }
     },
     "/api/customer/account": {
@@ -6503,17 +5997,7 @@
           {
             "sessionAuth": []
           }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object"
-              }
-            }
-          },
-          "required": false
-        }
+        ]
       }
     },
     "/api/customer/accounting/status": {
@@ -6609,17 +6093,7 @@
           {
             "sessionAuth": []
           }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object"
-              }
-            }
-          },
-          "required": false
-        }
+        ]
       }
     },
     "/api/customer/accounting/sync-now": {
@@ -6648,17 +6122,7 @@
           {
             "sessionAuth": []
           }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object"
-              }
-            }
-          },
-          "required": false
-        }
+        ]
       }
     },
     "/api/customer/accounting/test-connection": {
@@ -6687,17 +6151,36 @@
           {
             "sessionAuth": []
           }
+        ]
+      }
+    },
+    "/api/customer/available-courses": {
+      "get": {
+        "tags": [
+          "customer"
         ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object"
-              }
-            }
+        "operationId": "api_customer.list_available_courses",
+        "summary": "Api Customer — List Available Courses",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Erfolgreiche Antwort"
           },
-          "required": false
-        }
+          "401": {
+            "description": "Nicht authentifiziert"
+          },
+          "403": {
+            "description": "Keine Berechtigung"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          },
+          {
+            "sessionAuth": []
+          }
+        ]
       }
     },
     "/api/customer/blockcourse/{course_id}/enroll": {
@@ -6735,17 +6218,7 @@
           {
             "sessionAuth": []
           }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object"
-              }
-            }
-          },
-          "required": false
-        }
+        ]
       }
     },
     "/api/customer/bookings": {
@@ -6812,17 +6285,7 @@
           {
             "sessionAuth": []
           }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object"
-              }
-            }
-          },
-          "required": false
-        }
+        ]
       }
     },
     "/api/customer/bookings/{booking_id}/cancel-request": {
@@ -6831,7 +6294,6 @@
           "customer"
         ],
         "operationId": "api_customer.cancel_request",
-        "summary": "Api Customer — Cancel Request",
         "parameters": [
           {
             "name": "booking_id",
@@ -6860,17 +6322,7 @@
           {
             "sessionAuth": []
           }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object"
-              }
-            }
-          },
-          "required": false
-        }
+        ]
       }
     },
     "/api/customer/calendar-token": {
@@ -6928,17 +6380,7 @@
           {
             "sessionAuth": []
           }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object"
-              }
-            }
-          },
-          "required": false
-        }
+        ]
       }
     },
     "/api/customer/checkout": {
@@ -6967,17 +6409,7 @@
           {
             "sessionAuth": []
           }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object"
-              }
-            }
-          },
-          "required": false
-        }
+        ]
       }
     },
     "/api/customer/checkout/status/{checkout_id}": {
@@ -6990,6 +6422,81 @@
         "parameters": [
           {
             "name": "checkout_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Erfolgreiche Antwort"
+          },
+          "401": {
+            "description": "Nicht authentifiziert"
+          },
+          "403": {
+            "description": "Keine Berechtigung"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          },
+          {
+            "sessionAuth": []
+          }
+        ]
+      }
+    },
+    "/api/customer/courses/{course_id}": {
+      "get": {
+        "tags": [
+          "customer"
+        ],
+        "operationId": "api_customer.get_course_detail",
+        "summary": "Api Customer — Get Course Detail",
+        "parameters": [
+          {
+            "name": "course_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Erfolgreiche Antwort"
+          },
+          "401": {
+            "description": "Nicht authentifiziert"
+          },
+          "403": {
+            "description": "Keine Berechtigung"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          },
+          {
+            "sessionAuth": []
+          }
+        ]
+      }
+    },
+    "/api/customer/courses/{course_id}/request-approval": {
+      "post": {
+        "tags": [
+          "customer"
+        ],
+        "operationId": "api_customer.request_opengroup_approval",
+        "parameters": [
+          {
+            "name": "course_id",
             "in": "path",
             "required": true,
             "schema": {
@@ -7052,8 +6559,8 @@
         "tags": [
           "customer"
         ],
-        "operationId": "api_mobile.customer_dashboard",
-        "summary": "Api Mobile — Customer Dashboard",
+        "operationId": "api_customer.get_dashboard",
+        "summary": "Api Customer — Get Dashboard",
         "parameters": [],
         "responses": {
           "200": {
@@ -7158,17 +6665,7 @@
           {
             "sessionAuth": []
           }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object"
-              }
-            }
-          },
-          "required": false
-        }
+        ]
       }
     },
     "/api/customer/dogs/{dog_id}": {
@@ -7206,17 +6703,7 @@
           {
             "sessionAuth": []
           }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object"
-              }
-            }
-          },
-          "required": false
-        }
+        ]
       },
       "delete": {
         "tags": [
@@ -7290,17 +6777,7 @@
           {
             "sessionAuth": []
           }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object"
-              }
-            }
-          },
-          "required": false
-        }
+        ]
       }
     },
     "/api/customer/dogs/{dog_id}/photo": {
@@ -7338,17 +6815,7 @@
           {
             "sessionAuth": []
           }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object"
-              }
-            }
-          },
-          "required": false
-        }
+        ]
       }
     },
     "/api/customer/einzelstunde/{course_id}/buy-card": {
@@ -7386,17 +6853,7 @@
           {
             "sessionAuth": []
           }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object"
-              }
-            }
-          },
-          "required": false
-        }
+        ]
       }
     },
     "/api/customer/einzelstunde/{course_id}/request": {
@@ -7405,7 +6862,6 @@
           "customer"
         ],
         "operationId": "api_customer.request_einzelstunde",
-        "summary": "Api Customer — Request Einzelstunde",
         "parameters": [
           {
             "name": "course_id",
@@ -7434,17 +6890,7 @@
           {
             "sessionAuth": []
           }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object"
-              }
-            }
-          },
-          "required": false
-        }
+        ]
       }
     },
     "/api/customer/einzelstunde/{course_id}/slots": {
@@ -7520,17 +6966,7 @@
           {
             "sessionAuth": []
           }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object"
-              }
-            }
-          },
-          "required": false
-        }
+        ]
       }
     },
     "/api/customer/einzelstunde/anfrage/{req_id}/cancel": {
@@ -7539,7 +6975,6 @@
           "customer"
         ],
         "operationId": "api_customer.cancel_einzelstunde_request",
-        "summary": "Api Customer — Cancel Einzelstunde Request",
         "parameters": [
           {
             "name": "req_id",
@@ -7568,17 +7003,7 @@
           {
             "sessionAuth": []
           }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object"
-              }
-            }
-          },
-          "required": false
-        }
+        ]
       }
     },
     "/api/customer/flexible/{course_id}/enroll": {
@@ -7616,38 +7041,20 @@
           {
             "sessionAuth": []
           }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object"
-              }
-            }
-          },
-          "required": false
-        }
+        ]
       }
     },
     "/api/customer/household": {
       "get": {
         "tags": [
-          "Haushalt"
+          "customer"
         ],
         "operationId": "api_customer.get_household",
         "summary": "Api Customer — Get Household",
-        "description": "Gibt Haushalt-Details zurück inkl. Mitglieder, Hunde und offene Einladungen.",
         "parameters": [],
         "responses": {
           "200": {
-            "description": "Erfolgreiche Antwort",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Household"
-                }
-              }
-            }
+            "description": "Erfolgreiche Antwort"
           },
           "401": {
             "description": "Nicht authentifiziert"
@@ -7669,11 +7076,10 @@
     "/api/customer/household/billing": {
       "put": {
         "tags": [
-          "Haushalt"
+          "customer"
         ],
-        "operationId": "api_customer.update_household_billing",
-        "summary": "Api Customer — Update Household Billing",
-        "description": "Aktualisiert die Rechnungsadresse des Haushalts.",
+        "operationId": "api_customer.household_update_billing",
+        "summary": "Api Customer — Household Update Billing",
         "parameters": [],
         "responses": {
           "200": {
@@ -7693,46 +7099,16 @@
           {
             "sessionAuth": []
           }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "required": [
-                  "billing_street",
-                  "billing_postal_code",
-                  "billing_city"
-                ],
-                "properties": {
-                  "billing_street": {
-                    "type": "string",
-                    "example": "Musterstraße 1"
-                  },
-                  "billing_postal_code": {
-                    "type": "string",
-                    "example": "12345"
-                  },
-                  "billing_city": {
-                    "type": "string",
-                    "example": "Berlin"
-                  }
-                }
-              }
-            }
-          },
-          "required": true
-        }
+        ]
       }
     },
     "/api/customer/household/invite": {
       "post": {
         "tags": [
-          "Haushalt"
+          "customer"
         ],
-        "operationId": "api_customer.invite_household_member",
-        "summary": "Api Customer — Invite Household Member",
-        "description": "Lädt ein neues Mitglied per E-Mail in den Haushalt ein.",
+        "operationId": "api_customer.household_invite",
+        "summary": "Api Customer — Household Invite",
         "parameters": [],
         "responses": {
           "200": {
@@ -7752,37 +7128,16 @@
           {
             "sessionAuth": []
           }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "required": [
-                  "email"
-                ],
-                "properties": {
-                  "email": {
-                    "type": "string",
-                    "format": "email",
-                    "example": "neues-mitglied@example.com"
-                  }
-                }
-              }
-            }
-          },
-          "required": true
-        }
+        ]
       }
     },
     "/api/customer/household/invite/{token}/accept": {
       "post": {
         "tags": [
-          "Haushalt"
+          "customer"
         ],
-        "operationId": "api_customer.accept_household_invite",
-        "summary": "Api Customer — Accept Household Invite",
-        "description": "Nimmt eine Haushalt-Einladung an.",
+        "operationId": "api_customer.household_accept_invite",
+        "summary": "Api Customer — Household Accept Invite",
         "parameters": [
           {
             "name": "token",
@@ -7802,9 +7157,6 @@
           },
           "403": {
             "description": "Keine Berechtigung"
-          },
-          "404": {
-            "description": "Einladung nicht gefunden oder abgelaufen"
           }
         },
         "security": [
@@ -7820,11 +7172,10 @@
     "/api/customer/household/leave": {
       "post": {
         "tags": [
-          "Haushalt"
+          "customer"
         ],
-        "operationId": "api_customer.leave_household",
-        "summary": "Api Customer — Leave Household",
-        "description": "Verlässt den aktuellen Haushalt.",
+        "operationId": "api_customer.household_leave",
+        "summary": "Api Customer — Household Leave",
         "parameters": [],
         "responses": {
           "200": {
@@ -7952,6 +7303,35 @@
         ]
       }
     },
+    "/api/customer/my-bookings": {
+      "get": {
+        "tags": [
+          "customer"
+        ],
+        "operationId": "api_customer.list_my_bookings",
+        "summary": "Api Customer — List My Bookings",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Erfolgreiche Antwort"
+          },
+          "401": {
+            "description": "Nicht authentifiziert"
+          },
+          "403": {
+            "description": "Keine Berechtigung"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          },
+          {
+            "sessionAuth": []
+          }
+        ]
+      }
+    },
     "/api/customer/notification-preferences": {
       "get": {
         "tags": [
@@ -8005,17 +7385,7 @@
           {
             "sessionAuth": []
           }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object"
-              }
-            }
-          },
-          "required": false
-        }
+        ]
       }
     },
     "/api/customer/products": {
@@ -8100,17 +7470,7 @@
           {
             "sessionAuth": []
           }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object"
-              }
-            }
-          },
-          "required": false
-        }
+        ]
       }
     },
     "/api/customer/sessions": {
@@ -8177,17 +7537,7 @@
           {
             "sessionAuth": []
           }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object"
-              }
-            }
-          },
-          "required": false
-        }
+        ]
       }
     },
     "/api/customer/validate-voucher": {
@@ -8216,17 +7566,7 @@
           {
             "sessionAuth": []
           }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object"
-              }
-            }
-          },
-          "required": false
-        }
+        ]
       }
     },
     "/api/customer/vouchers": {
@@ -8236,6 +7576,35 @@
         ],
         "operationId": "api_customer.list_vouchers",
         "summary": "Api Customer — List Vouchers",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Erfolgreiche Antwort"
+          },
+          "401": {
+            "description": "Nicht authentifiziert"
+          },
+          "403": {
+            "description": "Keine Berechtigung"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          },
+          {
+            "sessionAuth": []
+          }
+        ]
+      }
+    },
+    "/api/customer/vouchers/claim": {
+      "post": {
+        "tags": [
+          "customer"
+        ],
+        "operationId": "api_customer.claim_voucher",
+        "summary": "Api Customer — Claim Voucher",
         "parameters": [],
         "responses": {
           "200": {
@@ -8329,17 +7698,7 @@
           {
             "sessionAuth": []
           }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object"
-              }
-            }
-          },
-          "required": false
-        }
+        ]
       }
     },
     "/api/dogs/{dog_id}/comments/{comment_id}": {
@@ -8515,17 +7874,7 @@
           {
             "sessionAuth": []
           }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object"
-              }
-            }
-          },
-          "required": false
-        }
+        ]
       }
     },
     "/api/dogs/{dog_id}/files/upload": {
@@ -8563,17 +7912,7 @@
           {
             "sessionAuth": []
           }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object"
-              }
-            }
-          },
-          "required": false
-        }
+        ]
       }
     },
     "/api/forum/categories": {
@@ -8676,17 +8015,7 @@
           {
             "sessionAuth": []
           }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object"
-              }
-            }
-          },
-          "required": false
-        }
+        ]
       }
     },
     "/api/forum/post/{post_id}/delete": {
@@ -8724,17 +8053,7 @@
           {
             "sessionAuth": []
           }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object"
-              }
-            }
-          },
-          "required": false
-        }
+        ]
       }
     },
     "/api/forum/threads/{thread_id}": {
@@ -8810,17 +8129,7 @@
           {
             "sessionAuth": []
           }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object"
-              }
-            }
-          },
-          "required": false
-        }
+        ]
       }
     },
     "/api/forum/threads/{thread_id}/pin": {
@@ -8858,17 +8167,7 @@
           {
             "sessionAuth": []
           }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object"
-              }
-            }
-          },
-          "required": false
-        }
+        ]
       }
     },
     "/api/forum/threads/{thread_id}/reply": {
@@ -8906,17 +8205,7 @@
           {
             "sessionAuth": []
           }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object"
-              }
-            }
-          },
-          "required": false
-        }
+        ]
       }
     },
     "/api/messages": {
@@ -8983,17 +8272,7 @@
           {
             "sessionAuth": []
           }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object"
-              }
-            }
-          },
-          "required": false
-        }
+        ]
       }
     },
     "/api/messages/{conv_id}/clear": {
@@ -9069,17 +8348,7 @@
           {
             "sessionAuth": []
           }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object"
-              }
-            }
-          },
-          "required": false
-        }
+        ]
       }
     },
     "/api/messages/{conv_id}/delivered": {
@@ -9117,23 +8386,13 @@
           {
             "sessionAuth": []
           }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object"
-              }
-            }
-          },
-          "required": false
-        }
+        ]
       }
     },
     "/api/messages/{conv_id}/live-location": {
       "post": {
         "tags": [
-          "messages"
+          "session-location"
         ],
         "operationId": "api_live_location.start_live_location",
         "summary": "Api Live Location — Start Live Location",
@@ -9165,17 +8424,7 @@
           {
             "sessionAuth": []
           }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object"
-              }
-            }
-          },
-          "required": false
-        }
+        ]
       }
     },
     "/api/messages/{conv_id}/location": {
@@ -9213,17 +8462,7 @@
           {
             "sessionAuth": []
           }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object"
-              }
-            }
-          },
-          "required": false
-        }
+        ]
       }
     },
     "/api/messages/{conv_id}/media": {
@@ -9299,17 +8538,7 @@
           {
             "sessionAuth": []
           }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object"
-              }
-            }
-          },
-          "required": false
-        }
+        ]
       },
       "delete": {
         "tags": [
@@ -9383,17 +8612,7 @@
           {
             "sessionAuth": []
           }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object"
-              }
-            }
-          },
-          "required": false
-        }
+        ]
       }
     },
     "/api/messages/{conv_id}/read": {
@@ -9431,17 +8650,7 @@
           {
             "sessionAuth": []
           }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object"
-              }
-            }
-          },
-          "required": false
-        }
+        ]
       }
     },
     "/api/messages/{conv_id}/reopen": {
@@ -9479,17 +8688,7 @@
           {
             "sessionAuth": []
           }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object"
-              }
-            }
-          },
-          "required": false
-        }
+        ]
       }
     },
     "/api/messages/{conv_id}/search": {
@@ -9533,7 +8732,7 @@
     "/api/messages/{conv_id}/toggle-location-sharing": {
       "post": {
         "tags": [
-          "messages"
+          "session-location"
         ],
         "operationId": "api_live_location.toggle_location_sharing",
         "summary": "Api Live Location — Toggle Location Sharing",
@@ -9565,17 +8764,7 @@
           {
             "sessionAuth": []
           }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object"
-              }
-            }
-          },
-          "required": false
-        }
+        ]
       }
     },
     "/api/messages/{conv_id}/unarchive": {
@@ -9613,17 +8802,7 @@
           {
             "sessionAuth": []
           }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object"
-              }
-            }
-          },
-          "required": false
-        }
+        ]
       }
     },
     "/api/messages/{conv_id}/upload": {
@@ -9661,17 +8840,7 @@
           {
             "sessionAuth": []
           }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object"
-              }
-            }
-          },
-          "required": false
-        }
+        ]
       }
     },
     "/api/messages/{conversation_id}": {
@@ -9745,17 +8914,7 @@
           {
             "sessionAuth": []
           }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object"
-              }
-            }
-          },
-          "required": false
-        }
+        ]
       }
     },
     "/api/messages/{conversation_id}/members": {
@@ -9829,17 +8988,7 @@
           {
             "sessionAuth": []
           }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object"
-              }
-            }
-          },
-          "required": false
-        }
+        ]
       }
     },
     "/api/messages/{conversation_id}/members/{user_id}": {
@@ -9961,17 +9110,7 @@
           {
             "sessionAuth": []
           }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object"
-              }
-            }
-          },
-          "required": false
-        }
+        ]
       }
     },
     "/api/messages/{msg_id}/reactions": {
@@ -10009,17 +9148,7 @@
           {
             "sessionAuth": []
           }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object"
-              }
-            }
-          },
-          "required": false
-        }
+        ]
       }
     },
     "/api/messages/{msg_id}/reactions/{emoji}": {
@@ -10103,17 +9232,7 @@
           {
             "sessionAuth": []
           }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object"
-              }
-            }
-          },
-          "required": false
-        }
+        ]
       },
       "delete": {
         "tags": [
@@ -10178,17 +9297,7 @@
           {
             "sessionAuth": []
           }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object"
-              }
-            }
-          },
-          "required": false
-        }
+        ]
       }
     },
     "/api/messages/contacts": {
@@ -10246,17 +9355,7 @@
           {
             "sessionAuth": []
           }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object"
-              }
-            }
-          },
-          "required": false
-        }
+        ]
       }
     },
     "/api/messages/info/{message_id}": {
@@ -10300,7 +9399,7 @@
     "/api/messages/live-location/{session_id}": {
       "delete": {
         "tags": [
-          "messages"
+          "session-location"
         ],
         "operationId": "api_live_location.stop_live_location",
         "summary": "Api Live Location — Stop Live Location",
@@ -10338,7 +9437,7 @@
     "/api/messages/live-location/{session_id}/positions": {
       "get": {
         "tags": [
-          "messages"
+          "session-location"
         ],
         "operationId": "api_live_location.get_positions",
         "summary": "Api Live Location — Get Positions",
@@ -10428,17 +9527,7 @@
           {
             "sessionAuth": []
           }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object"
-              }
-            }
-          },
-          "required": false
-        }
+        ]
       }
     },
     "/api/messages/polls/{poll_id}/close": {
@@ -10476,17 +9565,7 @@
           {
             "sessionAuth": []
           }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object"
-              }
-            }
-          },
-          "required": false
-        }
+        ]
       }
     },
     "/api/messages/polls/{poll_id}/respond": {
@@ -10524,17 +9603,7 @@
           {
             "sessionAuth": []
           }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object"
-              }
-            }
-          },
-          "required": false
-        }
+        ]
       }
     },
     "/api/messages/polls/{poll_id}/results": {
@@ -10610,17 +9679,7 @@
           {
             "sessionAuth": []
           }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object"
-              }
-            }
-          },
-          "required": false
-        }
+        ]
       }
     },
     "/api/messages/shared-courses/{user_id}": {
@@ -10783,17 +9842,7 @@
           {
             "sessionAuth": []
           }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object"
-              }
-            }
-          },
-          "required": false
-        }
+        ]
       }
     },
     "/api/platform/finances": {
@@ -10918,17 +9967,7 @@
           {
             "sessionAuth": []
           }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object"
-              }
-            }
-          },
-          "required": false
-        }
+        ]
       }
     },
     "/api/platform/logs": {
@@ -11013,17 +10052,7 @@
           {
             "sessionAuth": []
           }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object"
-              }
-            }
-          },
-          "required": false
-        }
+        ]
       }
     },
     "/api/platform/maintenance/schedule": {
@@ -11052,17 +10081,7 @@
           {
             "sessionAuth": []
           }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object"
-              }
-            }
-          },
-          "required": false
-        }
+        ]
       },
       "delete": {
         "tags": [
@@ -11156,17 +10175,7 @@
           {
             "sessionAuth": []
           }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object"
-              }
-            }
-          },
-          "required": false
-        }
+        ]
       }
     },
     "/api/platform/prices/plans/{plan_id}": {
@@ -11204,17 +10213,7 @@
           {
             "sessionAuth": []
           }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object"
-              }
-            }
-          },
-          "required": false
-        }
+        ]
       }
     },
     "/api/platform/prices/plans/{plan_id}/content": {
@@ -11252,17 +10251,175 @@
           {
             "sessionAuth": []
           }
+        ]
+      }
+    },
+    "/api/platform/promo-codes": {
+      "get": {
+        "tags": [
+          "platform"
         ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object"
-              }
-            }
+        "operationId": "api_platform_admin.list_promo_codes",
+        "summary": "Api Platform Admin — List Promo Codes",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Erfolgreiche Antwort"
           },
-          "required": false
-        }
+          "401": {
+            "description": "Nicht authentifiziert"
+          },
+          "403": {
+            "description": "Keine Berechtigung"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          },
+          {
+            "sessionAuth": []
+          }
+        ]
+      },
+      "post": {
+        "tags": [
+          "platform"
+        ],
+        "operationId": "api_platform_admin.create_promo_code",
+        "summary": "Api Platform Admin — Create Promo Code",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Erfolgreiche Antwort"
+          },
+          "401": {
+            "description": "Nicht authentifiziert"
+          },
+          "403": {
+            "description": "Keine Berechtigung"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          },
+          {
+            "sessionAuth": []
+          }
+        ]
+      }
+    },
+    "/api/platform/promo-codes/{code_id}": {
+      "get": {
+        "tags": [
+          "platform"
+        ],
+        "operationId": "api_platform_admin.get_promo_code",
+        "summary": "Api Platform Admin — Get Promo Code",
+        "parameters": [
+          {
+            "name": "code_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Erfolgreiche Antwort"
+          },
+          "401": {
+            "description": "Nicht authentifiziert"
+          },
+          "403": {
+            "description": "Keine Berechtigung"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          },
+          {
+            "sessionAuth": []
+          }
+        ]
+      },
+      "put": {
+        "tags": [
+          "platform"
+        ],
+        "operationId": "api_platform_admin.update_promo_code",
+        "summary": "Api Platform Admin — Update Promo Code",
+        "parameters": [
+          {
+            "name": "code_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Erfolgreiche Antwort"
+          },
+          "401": {
+            "description": "Nicht authentifiziert"
+          },
+          "403": {
+            "description": "Keine Berechtigung"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          },
+          {
+            "sessionAuth": []
+          }
+        ]
+      }
+    },
+    "/api/platform/promo-codes/{code_id}/toggle": {
+      "post": {
+        "tags": [
+          "platform"
+        ],
+        "operationId": "api_platform_admin.toggle_promo_code",
+        "summary": "Api Platform Admin — Toggle Promo Code",
+        "parameters": [
+          {
+            "name": "code_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Erfolgreiche Antwort"
+          },
+          "401": {
+            "description": "Nicht authentifiziert"
+          },
+          "403": {
+            "description": "Keine Berechtigung"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          },
+          {
+            "sessionAuth": []
+          }
+        ]
       }
     },
     "/api/platform/schools": {
@@ -11318,17 +10475,7 @@
           {
             "sessionAuth": []
           }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object"
-              }
-            }
-          },
-          "required": false
-        }
+        ]
       }
     },
     "/api/platform/schools/{school_id}": {
@@ -11402,17 +10549,7 @@
           {
             "sessionAuth": []
           }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object"
-              }
-            }
-          },
-          "required": false
-        }
+        ]
       },
       "delete": {
         "tags": [
@@ -11486,17 +10623,7 @@
           {
             "sessionAuth": []
           }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object"
-              }
-            }
-          },
-          "required": false
-        }
+        ]
       }
     },
     "/api/platform/schools/{school_id}/request-access": {
@@ -11505,7 +10632,6 @@
           "platform"
         ],
         "operationId": "api_platform_admin.request_school_access",
-        "summary": "Api Platform Admin — Request School Access",
         "parameters": [
           {
             "name": "school_id",
@@ -11534,17 +10660,7 @@
           {
             "sessionAuth": []
           }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object"
-              }
-            }
-          },
-          "required": false
-        }
+        ]
       }
     },
     "/api/platform/schools/{school_id}/set-plan": {
@@ -11582,17 +10698,7 @@
           {
             "sessionAuth": []
           }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object"
-              }
-            }
-          },
-          "required": false
-        }
+        ]
       }
     },
     "/api/platform/settings": {
@@ -11648,17 +10754,7 @@
           {
             "sessionAuth": []
           }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object"
-              }
-            }
-          },
-          "required": false
-        }
+        ]
       }
     },
     "/api/platform/system": {
@@ -11743,17 +10839,7 @@
           {
             "sessionAuth": []
           }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object"
-              }
-            }
-          },
-          "required": false
-        }
+        ]
       }
     },
     "/api/platform/users/{user_id}/reset-2fa": {
@@ -11791,17 +10877,7 @@
           {
             "sessionAuth": []
           }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object"
-              }
-            }
-          },
-          "required": false
-        }
+        ]
       }
     },
     "/api/platform/users/{user_id}/revoke": {
@@ -11839,17 +10915,7 @@
           {
             "sessionAuth": []
           }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object"
-              }
-            }
-          },
-          "required": false
-        }
+        ]
       }
     },
     "/api/public/pricing": {
@@ -11870,7 +10936,15 @@
           "403": {
             "description": "Keine Berechtigung"
           }
-        }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          },
+          {
+            "sessionAuth": []
+          }
+        ]
       }
     },
     "/api/public/schools/by-code/{code}": {
@@ -11900,7 +10974,15 @@
           "403": {
             "description": "Keine Berechtigung"
           }
-        }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          },
+          {
+            "sessionAuth": []
+          }
+        ]
       }
     },
     "/api/public/schools/search": {
@@ -11921,7 +11003,15 @@
           "403": {
             "description": "Keine Berechtigung"
           }
-        }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          },
+          {
+            "sessionAuth": []
+          }
+        ]
       }
     },
     "/api/push/register": {
@@ -11950,17 +11040,7 @@
           {
             "sessionAuth": []
           }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object"
-              }
-            }
-          },
-          "required": false
-        }
+        ]
       }
     },
     "/api/push/unregister": {
@@ -11989,23 +11069,13 @@
           {
             "sessionAuth": []
           }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object"
-              }
-            }
-          },
-          "required": false
-        }
+        ]
       }
     },
     "/api/schools/join/{code}": {
       "get": {
         "tags": [
-          "schools"
+          "other"
         ],
         "operationId": "_ios_school_join_alias",
         "summary": " Ios School Join Alias",
@@ -12081,7 +11151,7 @@
     "/api/trainer/attendance/{booking_id}": {
       "post": {
         "tags": [
-          "trainer"
+          "platform"
         ],
         "operationId": "api_mobile.api_mark_attendance",
         "summary": "Api Mobile — Api Mark Attendance",
@@ -12113,17 +11183,7 @@
           {
             "sessionAuth": []
           }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object"
-              }
-            }
-          },
-          "required": false
-        }
+        ]
       }
     },
     "/api/trainer/availability": {
@@ -12179,17 +11239,7 @@
           {
             "sessionAuth": []
           }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object"
-              }
-            }
-          },
-          "required": false
-        }
+        ]
       }
     },
     "/api/trainer/availability/{slot_id}": {
@@ -12227,17 +11277,7 @@
           {
             "sessionAuth": []
           }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object"
-              }
-            }
-          },
-          "required": false
-        }
+        ]
       },
       "delete": {
         "tags": [
@@ -12329,17 +11369,7 @@
           {
             "sessionAuth": []
           }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object"
-              }
-            }
-          },
-          "required": false
-        }
+        ]
       }
     },
     "/api/trainer/blockings/{blocking_id}": {
@@ -12511,129 +11541,12 @@
       "bearerAuth": {
         "type": "http",
         "scheme": "bearer",
-        "bearerFormat": "JWT",
-        "description": "JWT Access Token (Header: Authorization: Bearer <token>)"
+        "bearerFormat": "JWT"
       },
       "sessionAuth": {
         "type": "apiKey",
         "in": "cookie",
-        "name": "session",
-        "description": "Flask Session Cookie (Web-Frontend)"
-      }
-    },
-    "schemas": {
-      "HouseholdMember": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "integer"
-          },
-          "first_name": {
-            "type": "string"
-          },
-          "last_name": {
-            "type": "string"
-          },
-          "email": {
-            "type": "string",
-            "format": "email"
-          },
-          "role": {
-            "type": "string",
-            "enum": ["owner", "member"],
-            "description": "Rolle im Haushalt (owner = Ersteller, member = eingeladenes Mitglied)"
-          },
-          "joined_at": {
-            "type": "string",
-            "format": "date-time"
-          }
-        }
-      },
-      "HouseholdDog": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "integer"
-          },
-          "name": {
-            "type": "string"
-          },
-          "breed": {
-            "type": "string"
-          },
-          "date_of_birth": {
-            "type": "string",
-            "format": "date",
-            "nullable": true
-          },
-          "owner_id": {
-            "type": "integer",
-            "description": "ID des Mitglieds, dem der Hund gehört"
-          }
-        }
-      },
-      "HouseholdInvite": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "integer"
-          },
-          "email": {
-            "type": "string",
-            "format": "email"
-          },
-          "invited_at": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "expires_at": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "status": {
-            "type": "string",
-            "enum": ["pending", "accepted", "expired"],
-            "description": "Status der Einladung"
-          }
-        }
-      },
-      "Household": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "integer"
-          },
-          "billing_street": {
-            "type": "string",
-            "nullable": true
-          },
-          "billing_postal_code": {
-            "type": "string",
-            "nullable": true
-          },
-          "billing_city": {
-            "type": "string",
-            "nullable": true
-          },
-          "members": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/HouseholdMember"
-            }
-          },
-          "dogs": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/HouseholdDog"
-            }
-          },
-          "pending_invites": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/HouseholdInvite"
-            }
-          }
-        }
+        "name": "session"
       }
     }
   }
