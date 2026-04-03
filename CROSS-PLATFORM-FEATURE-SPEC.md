@@ -1,6 +1,6 @@
 # PawCoach — Cross-Platform Feature-Spezifikation (Unified)
 
-**Version:** 2026-03-24-v8
+**Version:** 2026-04-03-v9
 **Plattformen:** Backend (Flask/Python) | Web-Frontend (Jinja2+JS) | iOS (Swift/SwiftUI)
 **Zweck:** Zentrales Dokument fuer ALLE Plattformen. Die kanonische Quelle ist `PawCoach-Shared-Docs`.
 
@@ -905,12 +905,24 @@ Der oeffentliche und interne Pricing-Stand basiert auf einem gemeinsamen Katalog
 | Offline-Modus | - | - | Ja | Native SwiftData + SyncEngine |
 | App-Sperre (Face ID) | - | - | Ja | Native Biometrie |
 | Admin-Verwaltungsoberflaeche (CRUD) | Ja | Ja | Ja | |
-| SaaS-Billing (Stripe) | Ja | Ja | - | Web-only Checkout |
+| Stripe Payments (Kunden) | Ja | Ja | Ja | iOS via PaymentSheet SDK (v1.4.0) |
+| SaaS-Billing (Abo-Verwaltung) | Ja | Ja | - | Web-only Checkout |
 | Oeffentliche Schulseiten (SEO) | Ja | Ja | - | Web-only Landingpages |
 | E-Mail-Vorlagen-Editor | Ja | Ja | - | Web-only WYSIWYG |
 | Zustellstatus-Haekchen | Ja | - | Ja | Web zeigt Status nicht visuell |
 | Nachrichteninfo (Swipe) | Ja | - | Ja | Web koennte Dialog nutzen |
-| Chat-Suche | Ja | Ja (Server) | Ja (Lokal) | Beide Varianten verfuegbar |
+| Chat-Suche | Ja | Ja (Server) | Ja | Server-seitige Suche in iOS (v1.4.0) |
+| Emoji-Reaktionen | Ja | Ja | Ja | iOS v1.4.0 |
+| Nachrichten bearbeiten/loeschen | Ja | Ja | Ja | iOS v1.4.0 |
+| Nutzer blockieren/melden | Ja | Ja | Ja | iOS v1.4.0 |
+| Konversation stummschalten | Ja | Ja | Ja | iOS v1.4.0 |
+| Passkey-Verwaltung (Rename) | Ja | Ja | Ja | iOS v1.4.0 |
+| Trainer Zeiterfassung | Ja | Ja | Ja | iOS v1.4.0 |
+| Trainer Kalender-Feed (iCal) | Ja | Ja | Ja | iOS v1.4.0 |
+| Trainer Km-Bestaetigung | Ja | Ja | Ja | iOS v1.4.0 |
+| Admin Standort-Verwaltung | Ja | Ja | Ja | iOS v1.4.0 |
+| Admin Kursformate CRUD | Ja | Ja | Ja | iOS v1.4.0 |
+| Certificate Pinning | - | - | Ja | Leaf + ISRG Root X1 Backup |
 
 ### Statistik
 
@@ -919,7 +931,7 @@ Der oeffentliche und interne Pricing-Stand basiert auf einem gemeinsamen Katalog
 | API-Endpoints gesamt | ~570 |
 | Datenmodelle | ~100 |
 | Web-UI-Seiten | ~60 |
-| iOS-Screens | ~80 |
+| iOS-Screens | ~90 |
 | Benutzerrollen | 4 |
 | Feature-Bereiche | 13 |
 | Real-Time Events (Socket.IO) | ~12 |
